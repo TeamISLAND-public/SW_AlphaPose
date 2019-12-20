@@ -9,7 +9,7 @@ and it originates from many works
 
 ## Architecture
 
-[Architecture](https://github.com/SangbumChoi/Project1/ARCHITECTURE.md)
+[Architecture](ARCHITECTURE.md)
 
 Main architecture of this project is ellaborated in this description.
 Main languages might change due to effeciency and other factors.
