@@ -7,6 +7,14 @@ editing tool.
 and it originates from many works 
 [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark/).
 
+## Architecture
+
+[Architecture](https://github.com/SangbumChoi/Project1/ARCHITECTURE.md)
+
+Main architecture of this project is ellaborated in this description.
+Main languages might change due to effeciency and other factors.
+However, main product making progress should keep working.
+
 ## License
 
 Detectron2 is released under the [Apache 2.0 license]
