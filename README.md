@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="Logo/Team Island Logo.png" width="300">
+    <img src="Image/Logo/Team Island Logo.png" width="300">
 </div>
 
 ZZAZZ is suppose to make as an application of Team Island Project. However, at this moment
