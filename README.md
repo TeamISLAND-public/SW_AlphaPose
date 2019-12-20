@@ -1,4 +1,4 @@
-<img src="Logo/Team Island Logo.png" width="300" >
+<img src="Logo/Team Island Logo.png" width="300" align="middle">
 
 ZZAZZ is suppose to make as an application of Team Island Project. However, at this moment
 we decided to make as a Program File to give many users as an easy tool of making video
