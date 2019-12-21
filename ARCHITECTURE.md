@@ -9,7 +9,7 @@ We will offer fully automatic software, also maintaining the idea of design.
     <img src="Image/Logo/Team Island Logo.png" width="300">
 </div>
 
-## GUI Expectation
+## GUI Expectation Picture
 
 ## GUI Language
 [PtQy5](https://build-system.fman.io/pyqt5-tutorial)

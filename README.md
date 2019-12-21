@@ -10,12 +10,17 @@ and it originates from many works
 [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark/).
 
 ## Architecture
-
 [Architecture](ARCHITECTURE.md)
 
 Main architecture of this project is ellaborated in this description.
 Main languages might change due to effeciency and other factors.
 However, main product making progress should keep working.
+
+## Timeline structure
+[Timeline structure](TIMELINE.md)
+
+It is basically similiar as 'what to do', but to be specifically it has to be stated
+with exact time and specific operation work for make understand for other developers.
 
 ## License
 
