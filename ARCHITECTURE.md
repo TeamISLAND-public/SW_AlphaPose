@@ -20,7 +20,7 @@ We will offer fully automatic software, also maintaining the idea of design.
 * [Useful diagram for understanding Python based architecture flow](https://www.researchgate.net/figure/ODM-Tools-Python-software-architecture_fig2_275673185)
 
 * [What is the differences between Back and Front Developer](https://moolgogiheart.tistory.com/16)
-## GUI Expectation Picture
+## GUI/UI Expectation Picture
 
 ## GUI Language
 [PtQy5](https://build-system.fman.io/pyqt5-tutorial)
