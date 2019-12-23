@@ -33,6 +33,14 @@ References
 Common References
 * [Problem of automatic resizes in GUI](https://www.youtube.com/watch?v=FOIbK4bJKS8)
 
+* How to import tensorflow-gpu in executable file
+[Source 1](https://siran.tistory.com/69?category=846941)
+[Source 2](https://www.youtube.com/watch?v=fLQg8dgB7cA)
+
+* [What is the difference between branch and master](https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80)
+
+Branch is made because of avoid interaction between other branch and master.
+
 Look at the time of 32:42, and this video is basic information about making in C++ which
 is not compatible for our project. However it is useful information to look for it.
 
