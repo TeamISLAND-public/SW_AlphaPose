@@ -18,6 +18,9 @@ References
 
 * [What is the differences between Back and Front Developer](https://moolgogiheart.tistory.com/16)
 
+* [Related Video(GUI, Python, OpenCV collaboration)](https://www.youtube.com/watch?v=6RCDWMEitDI)
+
+* [Automatic resize problem in PyQt5](https://www.youtube.com/watch?v=Y-8N1dPFsVE)
 
 ##### Template GUI
 * Video loading window
