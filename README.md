@@ -9,6 +9,11 @@ editing tool.
 and it originates from many works 
 [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark/).
 
+## Basic Rule for commit
+1. [Type] (brief description)
+
+[Type] is [Code], [Description change], ...
+
 ## Architecture
 [Architecture](ARCHITECTURE.md)
 
