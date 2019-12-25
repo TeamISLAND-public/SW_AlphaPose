@@ -13,11 +13,17 @@ and it originates from many works
 1. [Type] (brief description)
 
 [Type] is 
+
 [Code Test] is new file, testing purpose
+
 [Code Change] is for updating new script
+
 [Code Fix] is for fixing bugs
+
 [Description Change] simple description change
+
 [File Change] is for updating new files
+
 ...
 
 ## Architecture
