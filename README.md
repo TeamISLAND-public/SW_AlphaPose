@@ -12,7 +12,7 @@ and it originates from many works
 ## Basic Rule for commit
 1. [Type] (brief description)
 
-[Type] is [Code Test], [Code Change], [Code Fix], [Description change], ...
+[Type] is [Code Test], [Code Change], [Code Fix], [Description Change], [File Change]...
 
 ## Architecture
 [Architecture](ARCHITECTURE.md)
