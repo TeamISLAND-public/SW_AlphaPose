@@ -1,4 +1,11 @@
 ## Timeline
+making UI
+
+Lightening Computer Vision model technology
+
+Linking with UI and Technology
+
+Making Effect
 
 ## Specific works
 1. unbreaking existing model for lightnening issue.
