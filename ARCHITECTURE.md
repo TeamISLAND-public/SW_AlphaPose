@@ -10,6 +10,9 @@ We will offer fully automatic software, also maintaining the idea of design.
 </div>
 
 #### GUI/UI Expectation Picture
+<div align="center">
+    <img src="Image/Architecture/GUI_Version1.0.png" width="600">
+</div>
 
 ##### Template GUI
 * Video loading window
@@ -68,3 +71,5 @@ Django(if it is needed)
 * [[GUI] Useful example of GUI template](https://github.com/pyqt/examples)
 
 Branch is made because of avoid interaction between other branch and master.
+
+*[[GUI] merge, branch, master](https://backlog.com/git-tutorial/kr/stepup/stepup2_5.html)
