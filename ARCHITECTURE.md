@@ -80,3 +80,5 @@ Django(if it is needed)
 Branch is made because of avoid interaction between other branch and master.
 
 *[[GUI] merge, branch, master](https://backlog.com/git-tutorial/kr/stepup/stepup2_5.html)
+
+[[GIT] How to organize the files with .gitignore.txt](https://blockchain-baam.tistory.com/3)
