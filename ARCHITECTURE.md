@@ -37,7 +37,7 @@ We will offer fully automatic software, also maintaining the idea of design.
 ## GUI Language
 [PtQy5](https://build-system.fman.io/pyqt5-tutorial):
 [Tutorial](http://codetorial.net/pyqt5/basics/icon.html):
-[What is pyqt](https://steemit.com/kr/@papasmf1/python-pyqt-gui-graphical-user-interface)
+[What is pyqt](https://steemit.com/kr/@papasmf1/python-pyqt-gui-graphical-user-interface)  
 [Pygtk VS Pyqt VS WxPython VS Tkinter](http://codingdojang.com/scode/257)
 
 ## Algorithm Language
