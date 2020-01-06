@@ -70,7 +70,8 @@ Django(if it is needed)
 
 * [GIT] What is the difference between branch and master
 
-[git branch](https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80)
+[git branch](https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80)  
+* [[GIT] How to handle the branch](https://trustyoo86.github.io/git/2017/11/28/git-remote-branch-create.html)
 
 [git hotfix and branch](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
 
