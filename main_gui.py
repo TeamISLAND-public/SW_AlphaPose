@@ -14,33 +14,39 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.errorLabel = QLabel()
         self.positionSlider = QSlider(Qt.Horizontal)
         self.playButton = QPushButton()
-        self.videoButton = QPushButton()
+        self.volumeSlider = QSlider(Qt.Vertical)
+        self.volumeText = QLabel()
         self.videoWidget = QVideoWidget()
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.initUI()
 
     def initUI(self):
-        self.resize(300, 300)
+        self.resize(700, 500)
         self.menu()
         self.statusBar()
 
         self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.videoButton.setEnabled(False)
-        self.videoButton.clicked.connect(self.close_video)
+        self.positionSlider.setRange(0, 0)
+        self.volumeSlider.setRange(0, 0)
 
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
         controlBox.addWidget(self.positionSlider)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.videoWidget)
-        layout.addLayout(controlBox)
-        layout.addWidget(self.errorLabel)
-        layout.addWidget(self.videoButton)
+        vLayout = QVBoxLayout()
+        vLayout.addWidget(self.videoWidget)
+        vLayout.addLayout(controlBox)
+
+        volumeBox = QVBoxLayout()
+        volumeBox.addWidget(self.volumeSlider)
+        volumeBox.addWidget(self.volumeText)
+
+        layout = QHBoxLayout()
+        layout.addLayout(volumeBox)
+        layout.addLayout(vLayout)
 
         widget = QWidget()
         widget.setLayout(layout)
@@ -52,30 +58,25 @@ class MyApp(QMainWindow):
         filename = QFileDialog.getOpenFileName(self, "Open file", os.getcwd(), "Video files(*.mp4 *.mkv *.avi)")
         # self.cap = cv2.VideoCapture(filename[0])
         self.playButton.setEnabled(True)
-        self.videoButton.setEnabled(True)
-        self.videoButton.setText("Click to close the video")
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename[0])))
-        self.videoPlayer()
-
-    def close_video(self):
-        self.videoWidget.close()
-        self.videoButton.setEnabled(False)
-        self.videoButton.setText("")
-        self.playButton.setEnabled(False)
-        self.positionSlider.setRange(0, 0)
+        self.maxVolume = self.mediaPlayer.volume()
+        try:
+            self.videoPlayer()
+        except Exception as ex:
+            print(ex)
 
     def videoPlayer(self):
         self.playButton.clicked.connect(self.play)
 
-        self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
-
-        self.errorLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        self.volumeSlider.sliderMoved.connect(self.setVolume)
 
         self.mediaPlayer.setVideoOutput(self.videoWidget)
         self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
-        self.mediaPlayer.positionChanged.connect(self.positionChanged)
-        self.mediaPlayer.durationChanged.connect(self.durationChanged)
+        self.mediaPlayer.positionChanged.connect(self.controlVideo)
+        self.mediaPlayer.durationChanged.connect(self.videoDuration)
+        self.mediaPlayer.volumeChanged.connect(self.controlVolume)
+        self.volumeDuration(self.mediaPlayer.volume())
         self.mediaPlayer.error.connect(self.handleError)
 
     def play(self):
@@ -84,16 +85,28 @@ class MyApp(QMainWindow):
         else:
             self.mediaPlayer.play()
 
-    def mediaStateChanged(self, state):
+    def mediaStateChanged(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
-    def positionChanged(self, position):
+    def controlVolume(self, volume):
+        self.volumeSlider.setValue(volume)
+        self.volumeText.setText("{:.1f}%".format((volume/self.maxVolume) * 100))
+
+    def volumeDuration(self, duration):
+        self.volumeSlider.setRange(0, duration)
+        self.volumeSlider.setValue(self.mediaPlayer.volume())
+        self.volumeText.setText("100.0%")
+
+    def setVolume(self, volume):
+        self.mediaPlayer.setVolume(volume)
+
+    def controlVideo(self, position):
         self.positionSlider.setValue(position)
 
-    def durationChanged(self, duration):
+    def videoDuration(self, duration):
         self.positionSlider.setRange(0, duration)
 
     def setPosition(self, position):
@@ -101,7 +114,7 @@ class MyApp(QMainWindow):
 
     def handleError(self):
         self.playButton.setEnabled(False)
-        self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
+        self.setStatusTip("Error: " + self.mediaPlayer.errorString())
 
     # def saveVideo(self):
     #     fourcc = cv2.VideoWriter_fourcc(*"DIVX")
