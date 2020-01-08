@@ -19,6 +19,11 @@ We will offer fully automatic software, also maintaining the idea of design.
     <img src="Image/Architecture/development_flow_version1.0.png" width="600">
 </div>
 
+<div align="center">
+    <img src="Image/Architecture/Detectron2_Visualizer_Description.png" width="600">
+</div>
+
+
 ##### Template GUI
 * Video loading window
 * Effect changing window
