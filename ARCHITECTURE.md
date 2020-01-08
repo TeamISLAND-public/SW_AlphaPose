@@ -42,7 +42,8 @@ We will offer fully automatic software, also maintaining the idea of design.
 ## GUI Language
 [PtQy5](https://build-system.fman.io/pyqt5-tutorial):
 [Tutorial](http://codetorial.net/pyqt5/basics/icon.html):
-[What is pyqt](https://steemit.com/kr/@papasmf1/python-pyqt-gui-graphical-user-interface)
+[What is pyqt](https://steemit.com/kr/@papasmf1/python-pyqt-gui-graphical-user-interface)  
+[Pygtk VS Pyqt VS WxPython VS Tkinter](http://codingdojang.com/scode/257)
 
 ## Algorithm Language
 Python, C++(Expected)
@@ -74,7 +75,8 @@ Django(if it is needed)
 
 * [GIT] What is the difference between branch and master
 
-[git branch](https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80)
+[git branch](https://git-scm.com/book/ko/v2/Git-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%B8%8C%EB%9E%9C%EC%B9%98%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80)  
+* [[GIT] How to handle the branch](https://trustyoo86.github.io/git/2017/11/28/git-remote-branch-create.html)
 
 [git hotfix and branch](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
 
@@ -83,3 +85,5 @@ Django(if it is needed)
 Branch is made because of avoid interaction between other branch and master.
 
 *[[GUI] merge, branch, master](https://backlog.com/git-tutorial/kr/stepup/stepup2_5.html)
+
+[[GIT] How to organize the files with .gitignore.txt](https://blockchain-baam.tistory.com/3)
