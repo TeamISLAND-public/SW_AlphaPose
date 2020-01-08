@@ -20,7 +20,7 @@ We will offer fully automatic software, also maintaining the idea of design.
 </div>
 
 <div align="center">
-    <img src="Image/Architecture/Detectron2_Visualizer_Description.png" width="600">
+    <img src="Image/Architecture/Detectron2_Visualizer_Description.PNG" width="600">
 </div>
 
 
