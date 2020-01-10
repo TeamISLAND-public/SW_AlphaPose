@@ -44,4 +44,4 @@ with exact time and specific operation work for make understand for other develo
 Detectron2 is released under the [Apache 2.0 license]
 
 ## Developers
-Sangbum Choi, DeaHo Kim
+Sangbum Choi, DaeHo Kim
