@@ -14,9 +14,7 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # self.fileList = QVBoxLayout()
         self.fileNameList = []
-        # self.fileButtonList = []
         self.videoTable = QTableWidget()
         self.positionSlider = QSlider(Qt.Horizontal)
         self.playButton = QPushButton()
