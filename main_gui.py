@@ -14,9 +14,8 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.fileList = QVBoxLayout()
         self.fileNameList = []
-        self.fileButtonList = []
+        self.videoTable = QTableWidget()
         self.positionSlider = QSlider(Qt.Horizontal)
         self.playButton = QPushButton()
         self.volumeSlider = QSlider(Qt.Vertical)
@@ -35,6 +34,14 @@ class MyApp(QMainWindow):
         self.positionSlider.setRange(0, 0)
         self.volumeSlider.setRange(0, 0)
 
+        # setting of file list
+        self.videoTable.setRowCount(0)
+        self.videoTable.setColumnCount(0)
+        self.videoTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+        # event when cell of file list is right clicked
+        self.cell_right_clicked()
+
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
         controlBox.addWidget(self.positionSlider)
@@ -48,7 +55,8 @@ class MyApp(QMainWindow):
         volumeBox.addWidget(self.volumeText)
 
         layout = QHBoxLayout()
-        layout.addLayout(self.fileList)
+        # layout.addLayout(self.fileList)
+        layout.addWidget(self.videoTable)
         layout.addLayout(volumeBox)
         layout.addLayout(vLayout)
 
@@ -62,6 +70,7 @@ class MyApp(QMainWindow):
         # if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
         #     self.mediaPlayer.stop()
         filename = QFileDialog.getOpenFileName(self, "Open file", os.getcwd(), "Video files(*.mp4 *.mkv *.avi)")
+        self.videoTable.setColumnCount(1)
 
         # if Video is already opened
         if filename[0] in self.fileNameList:
@@ -79,15 +88,14 @@ class MyApp(QMainWindow):
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename[0])))
         self.mediaPlayer.setVideoOutput(self.videoWidget)
 
-        # add the button which express each video
+        # add video file in table
+        self.fileNameList.append(filename[0])
+        currentRowCount = self.videoTable.rowCount()
         try:
-            self.fileNameList.append(filename[0])
-            # fileButton = FileButton(filename[0])
-            fileButton = QPushButton(filename[0])
-            fileButton.clicked.connect(lambda: self.change_video(fileButton.text()))
-            self.fileButtonList.append(fileButton)
-            self.fileList.addWidget(fileButton)
-            self.fileList.setAlignment(Qt.AlignTop)
+            self.videoTable.insertRow(currentRowCount)
+            self.videoTable.setItem(0, currentRowCount, QTableWidgetItem(filename[0]))
+            self.videoTable.resizeColumnsToContents()
+            self.videoTable.doubleClicked.connect(self.change_video)
         except Exception as ex:
             print(ex)
 
@@ -96,20 +104,29 @@ class MyApp(QMainWindow):
 
         self.videoPlayer()
 
-    def change_video(self, text):
+    def cell_right_clicked(self):
+        self.videoTable.setContextMenuPolicy(Qt.ActionsContextMenu)
+        delete_action = QAction("Delete", self.videoTable)
+        self.videoTable.addAction(delete_action)
+        delete_action.triggered.connect(self.delete_video)
+
+    def delete_video(self):
+        for i in self.videoTable.selectedItems():
+            self.fileNameList.remove(self.videoTable.item(i.row(), 0).text())
+            self.videoTable.removeRow(i.row())
+
+    def change_video(self, row):
         self.playButton.setEnabled(True)
 
         # set video
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(str(text))))
-        self.mediaPlayer.setVideoOutput(self.videoWidget)
+        for i in self.videoTable.selectedItems():
+            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(i.text())))
+            self.mediaPlayer.setVideoOutput(self.videoWidget)
 
         # set max volume of video
         self.maxVolume = self.mediaPlayer.volume()
 
         self.videoPlayer()
-
-    def videoButton(self):
-        raise NotImplementedError
 
     def videoPlayer(self):
         self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
