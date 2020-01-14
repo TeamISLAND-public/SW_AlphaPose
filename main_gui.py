@@ -8,16 +8,18 @@ from PyQt5.QtCore import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 
+from EffectBar.EffectButton import EffectBar
+from EffectStatusBar.EffectstatusButton import MainWindow
 
 class MyApp(QMainWindow):
 
     def __init__(self):
         super().__init__()
-
+        val = 4
         self.fileNameList = []
         self.videoTable = QTableWidget()
-        self.effectTable = QTableWidget()
-        self.effectstatusTable = QTableWidget()
+        self.effectTable = EffectBar()
+        self.effectstatusTable = MainWindow()
         self.positionSlider = QSlider(Qt.Horizontal)
         self.playButton = QPushButton()
         self.volumeSlider = QSlider(Qt.Vertical)
@@ -60,9 +62,9 @@ class MyApp(QMainWindow):
         # layout.addLayout(self.fileList)
         layout.addWidget(self.videoTable, 0, 0)
         layout.addWidget(self.effectTable, 1, 0)
-        layout.addWidget(self.effectstatusTable, 1, 1, 1, 2)
+        layout.addWidget(self.effectstatusTable, 1, 1)
         layout.addLayout(volumeBox,0,1)
-        layout.addLayout(vLayout,0,2)
+        layout.addLayout(vLayout,0,1)
 
         widget = QWidget()
         widget.setLayout(layout)
