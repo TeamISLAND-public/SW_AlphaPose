@@ -16,6 +16,8 @@ class MyApp(QMainWindow):
 
         self.fileNameList = []
         self.videoTable = QTableWidget()
+        self.effectTable = QTableWidget()
+        self.effectstatusTable = QTableWidget()
         self.positionSlider = QSlider(Qt.Horizontal)
         self.playButton = QPushButton()
         self.volumeSlider = QSlider(Qt.Vertical)
@@ -54,11 +56,13 @@ class MyApp(QMainWindow):
         volumeBox.addWidget(self.volumeSlider)
         volumeBox.addWidget(self.volumeText)
 
-        layout = QHBoxLayout()
+        layout = QGridLayout()
         # layout.addLayout(self.fileList)
-        layout.addWidget(self.videoTable)
-        layout.addLayout(volumeBox)
-        layout.addLayout(vLayout)
+        layout.addWidget(self.videoTable, 0, 0)
+        layout.addWidget(self.effectTable, 1, 0)
+        layout.addWidget(self.effectstatusTable, 1, 1, 1, 2)
+        layout.addLayout(volumeBox,0,1)
+        layout.addLayout(vLayout,0,2)
 
         widget = QWidget()
         widget.setLayout(layout)
