@@ -11,7 +11,7 @@ We will offer fully automatic software, also maintaining the idea of design.
 
 #### GUI/UI Expectation Picture
 <div align="center">
-    <img src="Image/Architecture/GUI_Version1.0.png" width="600">
+    <img src="Image/Architecture/GUI_Version1.1.png" width="600">
 </div>
 
 #### Development Expectation Picture
