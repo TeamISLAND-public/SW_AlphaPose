@@ -1,3 +1,7 @@
 # ignore .idea directory
-# .idea/*
-# .idea/
+.idea/*
+.idea/
+
+# ignore cached files
+__pycache__/
+*.pyc
