@@ -1,58 +1,50 @@
-import sys
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QScrollArea, QVBoxLayout, QGroupBox, QCheckBox
-from PyQt5.QtWidgets import QWidget, QPushButton
-from PyQt5.QtWidgets import QScrollArea, QVBoxLayout, QGroupBox, QCheckBox, QHBoxLayout, QGridLayout
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QSlider, QDialog, QLabel, QHBoxLayout
 
-lst = [u"On", u"Off"]
+from PyQt5.QtCore import Qt, pyqtSignal
 
-class EffectBar(QWidget):
+class EffectBar(QDialog):
+    changedValue = pyqtSignal(int)  # 발생하는 int type 시그널을 저장하는 시그널 객체
+
     def __init__(self):
         super(EffectBar, self).__init__()
-        # window_width = 1200
-        # window_height = 600
-        # self.setFixedSize(window_width, window_height)
-        self.initUI()
 
-    def createLayout_group(self, number):
-        sgroupbox = QGroupBox("Effect No.{}:".format(number), self)
-        layout_groupbox = QVBoxLayout(sgroupbox)
-        effect_button = QPushButton('Activate',sgroupbox)
-        layout_groupbox.addWidget(effect_button)
-        effect_button.clicked.connect(self.on_click)
-        # effect_2 = QPushButton('b', sgroupbox)
-        # layout_groupbox.addWidget(effect_2)
+        self.init_ui()
 
-        # for i in range(len(lst)):
-        #     item = QCheckBox(lst[i], sgroupbox)
-        #     layout_groupbox.addWidget(item)
-        #     item.stateChanged.connect(self.CheckBoxState)
-            # print(item)
-        layout_groupbox.addStretch(1)
-        return sgroupbox
+    def init_ui(self):
+        # Creating a label
 
-    @pyqtSlot()
-    def on_click(self):
-        sender = self.sender()
-        print(sender.text())
+        sliderLabel = QLabel('Slider:', self)
 
-    def createLayout_Container(self):
-        self.scrollarea = QScrollArea(self)
-        # self.scrollarea.setFixedHeight(150)
-        self.scrollarea.setWidgetResizable(True)
+        # Creating a slider and setting its maximum and minimum value
 
-        widget = QWidget()
-        self.scrollarea.setWidget(widget)
-        self.layout_SArea = QVBoxLayout(widget)
+        # self.slider.setMinimum(0)
 
-        for i in range(2):
-            self.layout_SArea.addWidget(self.createLayout_group(i))
-        self.layout_SArea.addStretch(1)
+        # self.slider.setMaximum(100)
 
-    def initUI(self):
-        self.createLayout_Container()
-        self.layout_All = QGridLayout(self)
-        self.layout_All.addWidget(self.scrollarea)
+        # self.slider.setOrientation(Qt.Horizontal)
+
+        self.slider = QSlider(Qt.Horizontal)
+
+        self.slider.setRange(0, 100)
+
+        self.slider.valueChanged.connect(self.on_changed_value)
+
+        # Creating a horizontalBoxLayout
+
+        hboxLayout = QHBoxLayout(self)  # Adding the widgets
+
+        hboxLayout.addWidget(sliderLabel)
+
+        hboxLayout.addWidget(self.slider)
+
+        # Setting main layout
+
+        self.setLayout(hboxLayout)
+
+        self.setWindowTitle("Dialog with a Slider")
+
         self.show()
+
+    def on_changed_value(self, val):  # 슬라이더를 움직일시 발생하는 시그널을
+
+        self.changedValue.emit(val)
