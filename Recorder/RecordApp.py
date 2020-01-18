@@ -32,7 +32,6 @@ class RecordApp(QMainWindow):
         self.setWindowTitle("Record Video")
 
         self.recordButton.clicked.connect(self.record)
-        self.stopButton.setEnabled(False)
         self.stopButton.clicked.connect(self.stop)
 
         layout = QVBoxLayout()
@@ -93,7 +92,6 @@ class RecordApp(QMainWindow):
 
     def record(self):
         self.recording = True
-        self.stopButton.setEnabled(True)
         self.recordButton.setEnabled(False)
         try:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
