@@ -5,3 +5,6 @@
 # ignore cached files
 __pycache__/
 *.pyc
+
+# ignore test files
+*.avi
