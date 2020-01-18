@@ -32,6 +32,14 @@ class EffectStatusBar(QDialog):
     def make_connection(self, slider_object):
         slider_object.changedValue.connect(self.get_slider_value)
 
+    def make_value(self, button_object):
+        button_object.sentValue.connect(self.get_int_value)
+
     @pyqtSlot(int)  # pyqtSlot 이 있을때만 실행된다
     def get_slider_value(self, val):
         self.progressBar.setValue(val)
+
+    @pyqtSlot(int, int)
+    def get_int_value(self, val, type):
+        self.progressBar.setFixedHeight(val)
+        print(val,type)
