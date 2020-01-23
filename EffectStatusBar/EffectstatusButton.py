@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QProgressBar, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QProgressBar, QLabel, QHBoxLayout, QFormLayout, QGroupBox, QScrollArea, QPushButton
 from PyQt5.QtCore import pyqtSlot
 
 class EffectStatusBar(QDialog):
@@ -13,11 +13,11 @@ class EffectStatusBar(QDialog):
 
         progressLabel = QLabel('Progress Bar:', self)
 
-        # Creating a progress bar and setting the value limits
-
         self.progressBar = QProgressBar(self)
         self.progressBar.setMaximum(100)
         self.progressBar.setMinimum(0)
+
+        self.formLayout = QFormLayout(self)
 
         # Creating a Horizontal Layout to add all the widgets
 
@@ -27,6 +27,7 @@ class EffectStatusBar(QDialog):
         # Setting the hBoxLayout as the main layout
 
         self.setLayout(self.hboxLayout)
+        self.setLayout(self.formLayout)
         self.show()
 
     def make_connection(self, slider_object):
@@ -41,5 +42,5 @@ class EffectStatusBar(QDialog):
 
     @pyqtSlot(int, int)
     def get_int_value(self, val, type):
-        self.progressBar.setFixedHeight(val)
+        self.formLayout.addRow(QLabel("a"))
         print(val,type)
