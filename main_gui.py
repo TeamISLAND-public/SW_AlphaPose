@@ -18,7 +18,6 @@ class MyApp(QMainWindow):
         self.videoPlayer = VideoStreamer()
         self.effectTable = EffectBar()
         self.effectstatusTable = EffectStatusBar()
-        self.effectstatusTable.make_connection(self.effectTable)
         self.effectstatusTable.make_value(self.effectTable)
         self.initUI()
 
