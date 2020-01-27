@@ -6,8 +6,8 @@ from PyQt5.QtCore import *
 from VideoPlayer.VideoList import VideoList
 from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
-from EffectBar.EffectBar import EffectBar
-from EffectStatusBar.EffectstatusBar import EffectStatusBar
+from EffectBar.EffectButton import EffectBar
+from EffectStatusBar.EffectstatusButton import EffectStatusBar
 
 
 class MyApp(QMainWindow):
@@ -18,7 +18,7 @@ class MyApp(QMainWindow):
         self.videoPlayer = VideoStreamer()
         self.effectTable = EffectBar()
         self.effectstatusTable = EffectStatusBar()
-        self.effectstatusTable.make_connection(self.effectTable)
+        self.effectstatusTable.make_value(self.effectTable)
         self.initUI()
 
     def initUI(self):
