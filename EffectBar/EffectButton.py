@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
-from PyQt5 import QtWidgets
+from PyQt5 import QtGui
 
 from PyQt5.QtCore import pyqtSignal, QSize
 
@@ -39,17 +39,17 @@ class EffectBar(QDialog):
         self.show()
 
     def button0_clicked_change_value(self):
+        self.val += 1
         self.type = 0
         self.sentValue.emit(self.val, self.type)
-        self.val += 1
 
     def button1_clicked_change_value(self):
+        self.val += 1
         self.type = 1
         self.sentValue.emit(self.val, self.type)
-        self.val += 1
 
     def button2_clicked_change_value(self):
+        self.val += 1
         self.type = 2
         self.sentValue.emit(self.val, self.type)
-        self.val += 1
 
