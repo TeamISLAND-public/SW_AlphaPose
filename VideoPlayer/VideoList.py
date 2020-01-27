@@ -2,6 +2,8 @@ import sys
 from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QAction, QApplication, QTableWidgetItem
 from PyQt5.QtCore import Qt
 
+from VideoPlayer.VideoStreamer import VideoStreamer
+
 
 class VideoList(QTableWidget):
 
@@ -22,10 +24,12 @@ class VideoList(QTableWidget):
         self.addAction(delete_action)
         delete_action.triggered.connect(self.delete_video)
 
-    def delete_video(self):
+    def delete_video(self, videoStreamer: VideoStreamer):
         for i in self.selectedItems():
             self.fileNameList.remove(self.item(i.row(), 0).text())
             self.removeRow(i.row())
+            if videoStreamer.name == self.item(i.row(), 0).text():
+                videoStreamer.delete_mediaPlayer()
 
     def add_video(self, name):
         self.fileNameList.append(name)

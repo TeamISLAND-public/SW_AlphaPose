@@ -16,6 +16,7 @@ class VideoStreamer(QWidget):
         self.volumeText = QLabel()
         self.videoWidget = QVideoWidget()
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.time = QLabel("00:00:00")
 
         self.initUI()
 
@@ -27,6 +28,7 @@ class VideoStreamer(QWidget):
 
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
+        controlBox.addWidget(self.time)
         controlBox.addWidget(self.positionSlider)
 
         vLayout = QVBoxLayout()
@@ -86,6 +88,10 @@ class VideoStreamer(QWidget):
 
     def controlVideo(self, position):
         self.positionSlider.setValue(position)
+        h = position // 360000
+        m = (position - h * 360000) // 60000
+        s = (position - h * 360000 - m * 60000) // 1000
+        self.time.setText("{:02d}:{:02d}:{:02d}".format(h, m, s))
 
     def videoDuration(self, duration):
         self.positionSlider.setRange(0, duration)
@@ -106,12 +112,19 @@ class VideoStreamer(QWidget):
     def set_video(self, name):
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(name)))
         self.mediaPlayer.setVideoOutput(self.videoWidget)
+        self.name = name
 
     def change_playButtonStatus(self):
-        if self.playButton.isEnabled():
-            self.playButton.setEnabled(False)
-        else:
+        if not self.playButton.isEnabled():
             self.playButton.setEnabled(True)
+
+    def delete_mediaPlayer(self):
+        self.maxVolume = 0
+        self.playButton.setEnabled(False)
+        self.positionSlider.setRange(0, 0)
+        self.volumeSlider.setRange(0, 0)
+        self.volumeText.clear()
+        # self.mediaPlayer.endofmedia()
 
 
 if __name__ == "__main__":
