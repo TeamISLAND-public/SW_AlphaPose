@@ -5,14 +5,16 @@ half automatic(tracking) UI.
 We will offer fully automatic software, also maintaining the idea of design.
 
 #### Architecture Picture
-<div align="center">
-    <img src="Image/Architecture/Architecture_Version1.0.png" width="600">
-</div>
+![a](Image/Architecture/Architecture_Version1.0.png)
 
 #### GUI/UI Expectation Picture
-<div align="center">
-    <img src="Image/Architecture/GUI_Version1.1.png" width="600">
-</div>
+Expectation
+
+![](Image/Architecture/GUI_Version1.2.png)
+
+Current
+
+![](Image/Result/GUI_Program.png)
 
 #### Development Expectation Picture
 <div align="center">

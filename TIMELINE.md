@@ -7,7 +7,9 @@ Linking with UI and Technology
 
 Making Effect
 
-![scanning_result_1.0](Image/Result/scanning_result_1.1.gif)
+![scanning_result_1.1](Image/Result/scanning_result_1.1.gif)
+![stop_motion_1.0](Image/Result/stop_motion_result_1.0.gif)
+
 ## Specific works
 1. unbreaking existing model for lightnening issue.
 2. Test for loading issue of extra library. (For example if extra library such as 

@@ -6,19 +6,19 @@ from PyQt5.QtCore import *
 from VideoPlayer.VideoList import VideoList
 from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
-from EffectBar.EffectButton import EffectBar
-from EffectStatusBar.EffectstatusButton import MainWindow
+from EffectBar.EffectBar import EffectBar
+from EffectStatusBar.EffectstatusBar import EffectStatusBar
 
 
 class MyApp(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        val = 4
         self.videoTable = VideoList()
         self.videoPlayer = VideoStreamer()
         self.effectTable = EffectBar()
-        self.effectstatusTable = MainWindow()
+        self.effectstatusTable = EffectStatusBar()
+        self.effectstatusTable.make_connection(self.effectTable)
         self.initUI()
 
     def initUI(self):
@@ -31,7 +31,6 @@ class MyApp(QMainWindow):
         layout.addWidget(self.effectTable, 1, 0)
         layout.addWidget(self.effectstatusTable, 1, 1)
         layout.addWidget(self.videoPlayer, 0, 1)
-
         widget = QWidget()
         widget.setLayout(layout)
 
@@ -61,8 +60,6 @@ class MyApp(QMainWindow):
         self.videoPlayer.videoPlayer()
 
     def change_video(self, row):
-        self.videoPlayer.change_playButtonStatus()
-
         for i in self.videoTable.selectedItems():
             self.videoPlayer.set_video(i.text())
 
