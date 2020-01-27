@@ -1,71 +1,36 @@
 import sys
-import cv2
-import threading
 import os
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from PyQt5.QtMultimedia import *
-from PyQt5.QtMultimediaWidgets import *
 
-from EffectBar.EffectButton import EffectBar
-from EffectStatusBar.EffectstatusButton import MainWindow
+from VideoPlayer.VideoList import VideoList
+from VideoPlayer.VideoStreamer import VideoStreamer
+from Recorder.RecordApp import RecordApp
+from EffectBar.EffectBar import EffectBar
+from EffectStatusBar.EffectstatusBar import EffectStatusBar
+
 
 class MyApp(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        val = 4
-        self.fileNameList = []
-        self.videoTable = QTableWidget()
+        self.videoTable = VideoList()
+        self.videoPlayer = VideoStreamer()
         self.effectTable = EffectBar()
-        self.effectstatusTable = MainWindow()
-        self.positionSlider = QSlider(Qt.Horizontal)
-        self.playButton = QPushButton()
-        self.volumeSlider = QSlider(Qt.Vertical)
-        self.volumeText = QLabel()
-        self.videoWidget = QVideoWidget()
-        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.effectstatusTable = EffectStatusBar()
+        self.effectstatusTable.make_connection(self.effectTable)
         self.initUI()
 
     def initUI(self):
-        self.resize(1100, 500)
+        self.resize(1100, 800)
         self.menu()
         self.statusBar()
 
-        self.playButton.setEnabled(False)
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.positionSlider.setRange(0, 0)
-        self.volumeSlider.setRange(0, 0)
-
-        # setting of file list
-        self.videoTable.setRowCount(0)
-        self.videoTable.setColumnCount(0)
-        self.videoTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-        # event when cell of file list is right clicked
-        self.cell_right_clicked()
-
-        controlBox = QHBoxLayout()
-        controlBox.addWidget(self.playButton)
-        controlBox.addWidget(self.positionSlider)
-
-        vLayout = QVBoxLayout()
-        vLayout.addWidget(self.videoWidget)
-        vLayout.addLayout(controlBox)
-
-        volumeBox = QVBoxLayout()
-        volumeBox.addWidget(self.volumeSlider)
-        volumeBox.addWidget(self.volumeText)
-
         layout = QGridLayout()
-        # layout.addLayout(self.fileList)
         layout.addWidget(self.videoTable, 0, 0)
         layout.addWidget(self.effectTable, 1, 0)
         layout.addWidget(self.effectstatusTable, 1, 1)
-        layout.addLayout(volumeBox,0,1)
-        layout.addLayout(vLayout,0,1)
-
+        layout.addWidget(self.videoPlayer, 0, 1)
         widget = QWidget()
         widget.setLayout(layout)
 
@@ -73,12 +38,10 @@ class MyApp(QMainWindow):
         self.show()
 
     def open_video(self):
-        # if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-        #     self.mediaPlayer.stop()
         filename = QFileDialog.getOpenFileName(self, "Open file", os.getcwd(), "Video files(*.mp4 *.mkv *.avi)")
 
         # if Video is already opened
-        if filename[0] in self.fileNameList:
+        if filename[0] in self.videoTable.fileNameList:
             errorbox = QMessageBox()
             errorbox.warning(self, "Error Message", "Video is already opened", QMessageBox.Ok)
             return
@@ -87,109 +50,21 @@ class MyApp(QMainWindow):
         if not filename[0]:
             return
 
-        self.playButton.setEnabled(True)
+        self.videoPlayer.change_playButtonStatus()
         self.videoTable.setColumnCount(1)
+        self.videoPlayer.set_video(filename[0])
+        self.videoTable.add_video(filename[0])
+        self.videoTable.doubleClicked.connect(self.change_video)
+        self.videoPlayer.set_maxVolume()
 
-        # set video
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(filename[0])))
-        self.mediaPlayer.setVideoOutput(self.videoWidget)
-
-        # add video file in table
-        self.fileNameList.append(filename[0])
-        currentRowCount = self.videoTable.rowCount()
-        try:
-            self.videoTable.insertRow(currentRowCount)
-            self.videoTable.setItem(0, currentRowCount, QTableWidgetItem(filename[0]))
-            self.videoTable.resizeColumnsToContents()
-            self.videoTable.doubleClicked.connect(self.change_video)
-        except Exception as ex:
-            print(ex)
-
-        # set max volume of video
-        self.maxVolume = self.mediaPlayer.volume()
-
-        self.videoPlayer()
-
-    def cell_right_clicked(self):
-        self.videoTable.setContextMenuPolicy(Qt.ActionsContextMenu)
-        delete_action = QAction("Delete", self.videoTable)
-        self.videoTable.addAction(delete_action)
-        delete_action.triggered.connect(self.delete_video)
-
-    def delete_video(self):
-        for i in self.videoTable.selectedItems():
-            self.fileNameList.remove(self.videoTable.item(i.row(), 0).text())
-            self.videoTable.removeRow(i.row())
+        self.videoPlayer.videoPlayer()
 
     def change_video(self, row):
-        self.playButton.setEnabled(True)
-
-        # set video
         for i in self.videoTable.selectedItems():
-            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(i.text())))
-            self.mediaPlayer.setVideoOutput(self.videoWidget)
+            self.videoPlayer.set_video(i.text())
 
-        # set max volume of video
-        self.maxVolume = self.mediaPlayer.volume()
-
-        self.videoPlayer()
-
-    def videoPlayer(self):
-        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
-
-        # video controller
-        self.playButton.clicked.connect(self.play)
-        self.positionSlider.sliderMoved.connect(self.setPosition)
-        self.mediaPlayer.positionChanged.connect(self.controlVideo)
-        self.mediaPlayer.durationChanged.connect(self.videoDuration)
-
-        # audio controller
-        self.volumeSlider.sliderMoved.connect(self.setVolume)
-        self.mediaPlayer.volumeChanged.connect(self.controlVolume)
-        self.volumeDuration(self.mediaPlayer.volume())
-
-        self.mediaPlayer.error.connect(self.handleError)
-
-    def play(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.mediaPlayer.pause()
-        else:
-            self.mediaPlayer.play()
-
-    def mediaStateChanged(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
-        else:
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-
-    def controlVolume(self, volume):
-        self.volumeSlider.setValue(volume)
-        self.volumeText.setText("{:.1f}%".format((volume / self.maxVolume) * 100))
-
-    def volumeDuration(self, duration):
-        self.volumeSlider.setRange(0, duration)
-        self.volumeSlider.setValue(self.mediaPlayer.volume())
-        self.volumeText.setText("100.0%")
-
-    def setVolume(self, volume):
-        self.mediaPlayer.setVolume(volume)
-
-    def controlVideo(self, position):
-        self.positionSlider.setValue(position)
-
-    def videoDuration(self, duration):
-        self.positionSlider.setRange(0, duration)
-
-    def setPosition(self, position):
-        self.mediaPlayer.setPosition(position)
-
-    def handleError(self):
-        self.playButton.setEnabled(False)
-        self.positionSlider.setRange(0, 0)
-        self.volumeSlider.setRange(0, 0)
-        self.volumeText.clear()
-        self.setStatusTip("Error: " + self.mediaPlayer.errorString())
-        print(self.mediaPlayer.errorString())
+        self.videoPlayer.set_maxVolume()
+        self.videoPlayer.videoPlayer()
 
     # def saveVideo(self):
     #     fourcc = cv2.VideoWriter_fourcc(*"DIVX")
@@ -242,81 +117,6 @@ class MyApp(QMainWindow):
 
         menu_file.addMenu(video_new)
         menu_file.addAction(file_exit)
-
-
-class RecordApp(QMainWindow):
-    __instance = None
-
-    @classmethod
-    def __getInstance(cls):
-        return cls.__instance
-
-    @classmethod
-    def getInstance(cls):
-        cls.__instance = cls()
-        cls.getInstance = cls.__getInstance
-        return cls.__instance
-
-    def __init__(self):
-        super().__init__()
-
-        self.running = False
-        self.recordButton = QPushButton("Stop")
-        self.videoStream = QLabel()
-        self.initUI()
-
-    def initUI(self):
-        self.setWindowTitle("Record Video")
-
-        self.recordButton.clicked.connect(self.stop)
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.videoStream)
-        layout.addWidget(self.recordButton)
-
-        widget = QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-
-        self.resize(640, 500)
-
-    def start(self):
-        if self.running:
-            errorbox = QMessageBox()
-            errorbox.warning(self, "Error Message", "Webcam is already opened.", QMessageBox.Ok)
-            return
-
-        self.videoCaptureThread = threading.Thread(target=self.run)
-        self.videoCaptureThread.daemon = True
-        self.videoCaptureThread.start()
-
-    def stop(self):
-        try:
-            self.running = False
-            self.videoCaptureThread.join()
-            self.cap.release()
-            self.close()
-        except Exception as ex:
-            print(ex)
-
-    def run(self):
-        self.cap = cv2.VideoCapture(0)
-        self.running = True
-
-        while self.running:
-            ret, frame = self.cap.read()
-            if ret:
-                img = frame
-                qImg = QImage(img.data, img.shape[1], img.shape[0], QImage.Format_BGR888)
-                pixMap = QPixmap.fromImage(qImg)
-                self.videoStream.setPixmap(pixMap)
-            else:
-                errorbox = QMessageBox()
-                errorbox.warning(self, "Error Message", "Cannot read frame.", QMessageBox.Ok)
-                self.running = False
-                self.cap.release()
-                self.close()
-                break
 
 
 if __name__ == '__main__':
