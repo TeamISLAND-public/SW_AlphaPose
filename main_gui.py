@@ -61,8 +61,6 @@ class MyApp(QMainWindow):
         self.videoPlayer.videoPlayer()
 
     def change_video(self, row):
-        self.videoPlayer.change_playButtonStatus()
-
         for i in self.videoTable.selectedItems():
             self.videoPlayer.set_video(i.text())
 
