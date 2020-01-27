@@ -1,41 +1,55 @@
-import sys
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtWidgets import QScrollArea, QVBoxLayout, QGroupBox, QCheckBox
+from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
+from PyQt5 import QtGui
 
-lst = [u"On", u"Off"]
+from PyQt5.QtCore import pyqtSignal, QSize
 
-class EffectBar(QWidget):
+class EffectBar(QDialog):
+    sentValue = pyqtSignal(int, int)
+    val = 0
     def __init__(self):
         super(EffectBar, self).__init__()
-        # window_width = 1200
-        # window_height = 600
-        # self.setFixedSize(window_width, window_height)
-        self.initUI()
+        self.init_ui()
 
-    def createLayout_group(self, number):
-        sgroupbox = QGroupBox("Effect No.{}:".format(number), self)
-        layout_groupbox = QVBoxLayout(sgroupbox)
-        for i in range(len(lst)):
-            item = QCheckBox(lst[i], sgroupbox)
-            layout_groupbox.addWidget(item)
-        layout_groupbox.addStretch(1)
-        return sgroupbox
+    def init_ui(self):
+        formLayout =QFormLayout()
+        groupBox = QGroupBox("Effect")
+        labelLisName = ["Wipe Out Effect", "Sparkling GIF", "Scanning", "Extra", "IDK", "A"]
+        labelLis = []
+        comboList = []
 
-    def createLayout_Container(self):
-        self.scrollarea = QScrollArea(self)
-        self.scrollarea.setFixedWidth(250)
-        self.scrollarea.setWidgetResizable(True)
+        for i in  range(5):
+            labelLis.append(QLabel("{}".format(labelLisName[i])))
+            comboList.append(QPushButton(""))
+            # comboList.append(QPushButton.setIcon(QtGui.QIcon('Image/Class diagram/torch_scanning.png')))
+            formLayout.addRow(comboList[i], labelLis[i])
 
-        widget = QWidget()
-        self.scrollarea.setWidget(widget)
-        self.layout_SArea = QVBoxLayout(widget)
+        comboList[0].clicked.connect(self.button0_clicked_change_value)
+        comboList[1].clicked.connect(self.button1_clicked_change_value)
+        comboList[2].clicked.connect(self.button2_clicked_change_value)
+        comboList[3].clicked.connect(self.button0_clicked_change_value)
+        comboList[4].clicked.connect(self.button0_clicked_change_value)
 
-        for i in range(5):
-            self.layout_SArea.addWidget(self.createLayout_group(i))
-        self.layout_SArea.addStretch(1)
-
-    def initUI(self):
-        self.createLayout_Container()
-        self.layout_All = QVBoxLayout(self)
-        self.layout_All.addWidget(self.scrollarea)
+        groupBox.setLayout(formLayout)
+        scroll = QScrollArea()
+        scroll.setWidget(groupBox)
+        scroll.setWidgetResizable(True)
+        # scroll.setFixedHeight(200)
+        layout = QVBoxLayout(self)
+        layout.addWidget(scroll)
         self.show()
+
+    def button0_clicked_change_value(self):
+        self.val += 1
+        self.type = 0
+        self.sentValue.emit(self.val, self.type)
+
+    def button1_clicked_change_value(self):
+        self.val += 1
+        self.type = 1
+        self.sentValue.emit(self.val, self.type)
+
+    def button2_clicked_change_value(self):
+        self.val += 1
+        self.type = 2
+        self.sentValue.emit(self.val, self.type)
+
