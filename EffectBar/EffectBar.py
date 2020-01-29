@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
 from PyQt5 import QtWidgets
-
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import pyqtSignal, QSize
 
 class EffectBar(QDialog):
@@ -53,3 +53,10 @@ class EffectBar(QDialog):
         self.sentValue.emit(self.val, self.type)
         self.val += 1
 
+# This line is for EffectStatusBar to EffectBar connection
+    def return_connection(self, class_object):
+        class_object.returnValue.connect(self.EffectStatusBar_Inter_EffectBar)
+
+    @pyqtSlot(int)
+    def EffectStatusBar_Inter_EffectBar(self, val):
+        self.val = val
