@@ -26,8 +26,8 @@ class EffectBar(QDialog):
         comboList[0].clicked.connect(self.button0_clicked_change_value)
         comboList[1].clicked.connect(self.button1_clicked_change_value)
         comboList[2].clicked.connect(self.button2_clicked_change_value)
-        comboList[3].clicked.connect(self.button0_clicked_change_value)
-        comboList[4].clicked.connect(self.button0_clicked_change_value)
+        comboList[3].clicked.connect(self.button3_clicked_change_value)
+        comboList[4].clicked.connect(self.button4_clicked_change_value)
 
         groupBox.setLayout(formLayout)
         scroll = QScrollArea()
@@ -50,6 +50,16 @@ class EffectBar(QDialog):
 
     def button2_clicked_change_value(self):
         self.type = 2
+        self.sentValue.emit(self.val, self.type)
+        self.val += 1
+
+    def button3_clicked_change_value(self):
+        self.type = 3
+        self.sentValue.emit(self.val, self.type)
+        self.val += 1
+
+    def button4_clicked_change_value(self):
+        self.type = 4
         self.sentValue.emit(self.val, self.type)
         self.val += 1
 

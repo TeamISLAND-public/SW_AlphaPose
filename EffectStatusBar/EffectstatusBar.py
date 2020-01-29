@@ -18,8 +18,11 @@ class EffectStatusBar(QTableWidget):
 
         self.effect_queue_list = []
         self.setRowCount(0)
-        self.setColumnCount(1)
+        self.setColumnCount(2)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.setShowGrid(False)
+        self.verticalHeader().hide()
+        self.horizontalHeader().hide()
         self.cell_right_clicked()
         self.show()
 
@@ -65,8 +68,8 @@ class EffectStatusBar(QTableWidget):
         currentRowCount = self.rowCount()
         print(currentRowCount)
         self.insertRow(currentRowCount)
-        self.setItem(0, currentRowCount, QTableWidgetItem("{}".format(currentRowCount)))
-        self.setCellWidget(currentRowCount, 0, QRangeSlider())
+        self.setItem(currentRowCount, 0, QTableWidgetItem("{}".format(type)))
+        self.setCellWidget(currentRowCount, 1, QRangeSlider())
         self.horizontalHeader().setStretchLastSection(True)
 
         # self.resizeColumnsToContents()
