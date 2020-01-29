@@ -14,7 +14,7 @@ Expectation
 
 Current
 
-![](Image/Result/GUI_Program.png)
+![](Image/Result/GUI_Program2.png)
 
 #### Development Expectation Picture
 <div align="center">
