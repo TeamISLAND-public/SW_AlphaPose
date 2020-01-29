@@ -28,8 +28,8 @@ class VideoList(QTableWidget):
         for i in self.selectedItems():
             self.fileNameList.remove(self.item(i.row(), 0).text())
             self.removeRow(i.row())
-            if videoStreamer.name == self.item(i.row(), 0).text():
-                videoStreamer.delete_mediaPlayer()
+            # if videoStreamer.name == self.item(i.row(), 0).text():
+            #     videoStreamer.delete_mediaPlayer()
 
     def add_video(self, name):
         self.fileNameList.append(name)

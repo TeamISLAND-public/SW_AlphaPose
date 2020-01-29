@@ -1,8 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QVBoxLayout, QWidget, QApplication
+from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QVBoxLayout, QWidget, QApplication, QGridLayout
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtCore import Qt, QUrl
+from VideoPlayer.Playbar import PlayBar
 
 
 class VideoStreamer(QWidget):
@@ -10,40 +11,34 @@ class VideoStreamer(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.positionSlider = QSlider(Qt.Horizontal)
+        self.timeBox = PlayBar()
         self.playButton = QPushButton()
         self.volumeSlider = QSlider(Qt.Vertical)
-        self.volumeText = QLabel()
+        self.volumeText = QLabel("0.0%")
         self.videoWidget = QVideoWidget()
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-        self.time = QLabel("00:00:00")
 
         self.initUI()
 
     def initUI(self):
         self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.positionSlider.setRange(0, 0)
+        self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
+        self.videoWidget.resize(640, 480)
 
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
-        controlBox.addWidget(self.time)
-        controlBox.addWidget(self.positionSlider)
+        controlBox.addWidget(self.timeBox)
 
-        vLayout = QVBoxLayout()
-        vLayout.addWidget(self.videoWidget)
-        vLayout.addLayout(controlBox)
+        grid = QGridLayout()
+        grid.addWidget(self.volumeSlider, 0, 0)
+        grid.addWidget(self.volumeText, 1, 0)
+        grid.addWidget(self.playButton, 1, 1)
+        grid.addWidget(self.videoWidget, 0, 2)
+        grid.addWidget(self.timeBox, 1, 2)
 
-        volumeBox = QVBoxLayout()
-        volumeBox.addWidget(self.volumeSlider)
-        volumeBox.addWidget(self.volumeText)
-
-        layout = QHBoxLayout()
-        layout.addLayout(volumeBox)
-        layout.addLayout(vLayout)
-
-        self.setLayout(layout)
+        self.setLayout(grid)
         self.show()
 
     def videoPlayer(self):
@@ -51,8 +46,8 @@ class VideoStreamer(QWidget):
 
         # video controller
         self.playButton.clicked.connect(self.play)
-        self.positionSlider.sliderMoved.connect(self.setPosition)
-        self.mediaPlayer.positionChanged.connect(self.controlVideo)
+        self.timeBox.slider.sliderMoved.connect(self.setPosition)
+        self.mediaPlayer.positionChanged.connect(self.timeBox.controlVideo)
         self.mediaPlayer.durationChanged.connect(self.videoDuration)
 
         # audio controller
@@ -86,22 +81,15 @@ class VideoStreamer(QWidget):
     def setVolume(self, volume):
         self.mediaPlayer.setVolume(volume)
 
-    def controlVideo(self, position):
-        self.positionSlider.setValue(position)
-        h = position // 360000
-        m = (position - h * 360000) // 60000
-        s = (position - h * 360000 - m * 60000) // 1000
-        self.time.setText("{:02d}:{:02d}:{:02d}".format(h, m, s))
-
     def videoDuration(self, duration):
-        self.positionSlider.setRange(0, duration)
+        self.timeBox.changeRange(0, duration)
 
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
 
     def handleError(self):
         self.playButton.setEnabled(False)
-        self.positionSlider.setRange(0, 0)
+        self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
         self.volumeText.clear()
         self.setStatusTip("Error: " + self.mediaPlayer.errorString())
@@ -121,7 +109,7 @@ class VideoStreamer(QWidget):
     def delete_mediaPlayer(self):
         self.maxVolume = 0
         self.playButton.setEnabled(False)
-        self.positionSlider.setRange(0, 0)
+        self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
         self.volumeText.clear()
         # self.mediaPlayer.endofmedia()
