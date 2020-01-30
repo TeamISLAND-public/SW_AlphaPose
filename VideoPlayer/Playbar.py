@@ -27,12 +27,13 @@ class PlayBar(QWidget):
         if start == 0 and finish == 0:
             self.time.setText("00:00:00")
 
-    def controlVideo(self, position):
+    def controlVideo(self, position, fps):
         self.slider.setValue(position)
-        h = position // 360000
-        m = (position - h * 360000) // 60000
-        s = (position - h * 360000 - m * 60000) // 1000
-        self.time.setText("{:02d}:{:02d}:{:02d}".format(h, m, s))
+        position = position / fps
+        h = position // 3600
+        m = (position - h * 360000) // 60
+        s = position - h * 3600 - m * 60
+        self.time.setText("{:02d}:{:02d}:{:02d}".format(int(h), int(m), int(s)))
 
 
 if __name__ == "__main__":
