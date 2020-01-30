@@ -9,9 +9,7 @@ from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
 
-
 class MyApp(QMainWindow):
-
     def __init__(self):
         super().__init__()
         self.videoTable = VideoList()
@@ -19,6 +17,7 @@ class MyApp(QMainWindow):
         self.effectTable = EffectBar()
         self.effectstatusTable = EffectStatusBar()
         self.effectstatusTable.make_connection(self.effectTable)
+        self.effectTable.return_connection(self.effectstatusTable)
         self.initUI()
 
     def initUI(self):
