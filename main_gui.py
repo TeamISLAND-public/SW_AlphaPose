@@ -26,6 +26,10 @@ class MyApp(QMainWindow):
         self.statusBar()
 
         layout = QGridLayout()
+        layout.setRowStretch(0, 2)
+        layout.setRowStretch(1, 1)
+        layout.setColumnStretch(0, 1)
+        layout.setColumnStretch(1, 3)
         layout.addWidget(self.videoTable, 0, 0)
         layout.addWidget(self.effectTable, 1, 0)
         layout.addWidget(self.effectstatusTable, 1, 1)
