@@ -17,7 +17,6 @@ class MyApp(QMainWindow):
         self.effectTable = EffectBar()
         self.effectstatusTable = EffectStatusBar()
         self.effectstatusTable.make_connection(self.effectTable)
-        self.effectTable.return_connection(self.effectstatusTable)
         self.initUI()
 
     def initUI(self):
