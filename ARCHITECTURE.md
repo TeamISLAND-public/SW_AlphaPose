@@ -89,3 +89,23 @@ Branch is made because of avoid interaction between other branch and master.
 *[[GUI] merge, branch, master](https://backlog.com/git-tutorial/kr/stepup/stepup2_5.html)
 
 [[GIT] How to organize the files with .gitignore.txt](https://blockchain-baam.tistory.com/3)
+
+##Extra Information about Library setting
+install tqdm -> conda install tqdm
+
+intall detectron2 -> 
+first install pytorch: 
+Installed with conda altough I expect that I don't have cuda 10.1 I installed with cuda 10.1 version
+conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
+
+second install fvcore: 
+pip install git+https://github.com/facebookresearch/fvcore
+
+install cython -> conda install cython
+
+This also includes in installing pycocotools
+
+This would work instead of description on detectron2
+pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+
+and then load the setup.py do the process of [python setup.py build develop]
