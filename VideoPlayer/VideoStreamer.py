@@ -153,14 +153,6 @@ class VideoStreamer(QWidget):
     #
     # def set_maxVolume(self):
     #     self.maxVolume = self.mediaPlayer.volume()
-    #
-    # def delete_mediaPlayer(self):
-    #     self.maxVolume = 0
-    #     self.playButton.setEnabled(False)
-    #     self.timeBox.changeRange(0, 0)
-    #     self.volumeSlider.setRange(0, 0)
-    #     self.volumeText.clear()
-    #     # self.mediaPlayer.endofmedia()
 
 
 if __name__ == "__main__":
