@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
 from PyQt5.QtCore import pyqtSignal
 
-from Library.test import test
+# from Library.test import test
 
 class EffectBar(QDialog):
 
@@ -43,7 +43,7 @@ class EffectBar(QDialog):
     def effect0_clicked(self):
         self.type = 0
         self.sentValue.emit(self.type)
-        test()
+        # test()
         print(10001)
 
     def effect1_clicked(self):
