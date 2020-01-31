@@ -75,18 +75,6 @@ class MyApp(QMainWindow):
         # self.videoPlayer.set_maxVolume()
         self.videoPlayer.videoPlayer()
 
-    # def saveVideo(self):
-    #     fourcc = cv2.VideoWriter_fourcc(*"DIVX")
-    #     filename = QFileDialog.getOpenFileName(self, "Save file", os.getcwd())
-    #     out = cv2.VideoWriter(filename[0], fourcc, 25.0, (640, 480))
-    #     while True:
-    #         ret, frame = self.cap.read()
-    #         out.write(frame)
-    #
-    #     self.cap.release()
-    #     out.release()
-    #     cv2.destroyAllWindows()
-
     def record_video(self):
         recordWindow = RecordApp.getInstance()
         recordWindow.show()
@@ -122,9 +110,10 @@ class MyApp(QMainWindow):
         file_save = QAction("Save", self)
         file_save.setShortcut("Ctrl+S")
         file_save.setStatusTip("Save the video file")
-        # file_save.triggered.connect(self.saveVideo)
+        file_save.triggered.connect(self.videoPlayer.save_video)
 
         menu_file.addMenu(video_new)
+        menu_file.addAction(file_save)
         menu_file.addAction(file_exit)
 
 

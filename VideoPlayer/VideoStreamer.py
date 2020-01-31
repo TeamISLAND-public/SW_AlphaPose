@@ -1,12 +1,12 @@
 import sys
 import cv2
-import time
-from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QVBoxLayout, QWidget, QApplication, QGridLayout
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtCore import Qt, QUrl, QTimer
+import os
+from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QFileDialog, QProgressBar, QMainWindow
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
+
 from VideoPlayer.Playbar import PlayBar
+from VideoSave.VideoSave import VideoSave
 
 
 class VideoStreamer(QWidget):
@@ -115,6 +115,10 @@ class VideoStreamer(QWidget):
         self.cap.release()
         self.playButton.setEnabled(False)
         self.timeBox.changeRange(0, 0)
+
+    def save_video(self):
+        videoSave = VideoSave(self.name)
+        videoSave.saveVideo()
 
     # def videoPlayer(self):
     #     self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
