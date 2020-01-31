@@ -28,6 +28,7 @@ class VideoStreamer(QWidget):
     def initUI(self):
         self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.playButton.clicked.connect(self.play)
         self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
         # self.videoWidget.resize(640, 480)
@@ -65,20 +66,18 @@ class VideoStreamer(QWidget):
 
     def start(self):
         self.timer.timeout.connect(self.nextFrameSlot)
-        self.timer.start(1000./30)
+        print(self.fps)
+        self.timer.start(1000 / self.fps)
 
     def play(self):
         if not self.ret and not self.timer.isActive():
-            print("timer goes to start point")
             self.setPosition(0)
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
         if self.timer.isActive():
-            print("timer stops")
             self.timer.stop()
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         else:
-            print("timer starts")
             self.timer.start()
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
@@ -92,8 +91,13 @@ class VideoStreamer(QWidget):
         self.videoDuration(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
         self.start()
 
+    def change_video(self, name):
+        self.cap.release()
+        self.killTimer(self.timer.timerId())
+        self.timer = QTimer()
+        self.set_video(name)
+
     def videoPlayer(self):
-        self.playButton.clicked.connect(self.play)
         self.timeBox.slider.sliderMoved.connect(self.setPosition)
 
     def videoDuration(self, duration):

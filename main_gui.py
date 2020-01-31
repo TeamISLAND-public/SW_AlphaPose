@@ -21,6 +21,7 @@ class MyApp(QMainWindow):
         self.effectstatusTable = EffectStatusBar()
         self.effectstatusTable.make_connection(self.effectTable)
         self.initUI()
+        self.flag = True
 
     def initUI(self):
         self.resize(1280, 720)
@@ -53,7 +54,11 @@ class MyApp(QMainWindow):
 
         self.videoPlayer.change_playButtonStatus()
         self.videoTable.setColumnCount(1)
-        self.videoPlayer.set_video(filename[0])
+        if self.flag:
+            self.videoPlayer.set_video(filename[0])
+            self.flag = False
+        else:
+            self.videoPlayer.change_video(filename[0])
         self.videoTable.add_video(filename[0])
         self.videoTable.doubleClicked.connect(self.change_video)
         # self.videoPlayer.set_maxVolume()
@@ -62,7 +67,7 @@ class MyApp(QMainWindow):
 
     def change_video(self, row):
         for i in self.videoTable.selectedItems():
-            self.videoPlayer.set_video(i.text())
+            self.videoPlayer.change_video(i.text())
 
         # self.videoPlayer.set_maxVolume()
         self.videoPlayer.videoPlayer()
