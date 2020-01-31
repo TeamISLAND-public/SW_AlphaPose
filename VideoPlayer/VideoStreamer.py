@@ -82,7 +82,8 @@ class VideoStreamer(QWidget):
 
     def set_video(self, name):
         self.time = 0
-        self.cap = cv2.VideoCapture(name)
+        self.name = name
+        self.cap = cv2.VideoCapture(self.name)
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.setPosition(0)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
@@ -109,6 +110,11 @@ class VideoStreamer(QWidget):
     def change_playButtonStatus(self):
         if not self.playButton.isEnabled():
             self.playButton.setEnabled(True)
+
+    def delete_mediaPlayer(self):
+        self.cap.release()
+        self.playButton.setEnabled(False)
+        self.timeBox.changeRange(0, 0)
 
     # def videoPlayer(self):
     #     self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)

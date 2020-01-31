@@ -15,8 +15,8 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.videoTable = VideoList()
         self.videoPlayer = VideoStreamer()
+        self.videoTable = VideoList(self.videoPlayer)
         self.effectTable = EffectBar()
         self.effectstatusTable = EffectStatusBar()
         self.effectstatusTable.make_connection(self.effectTable)
