@@ -41,7 +41,7 @@ with exact time and specific operation work for make understand for other develo
 
 ## License
 
-Detectron2 is released under the [Apache 2.0 license]
+SWZZAZZ is released under the [Apache 2.0 license](LICENSE).
 
 ## Developers
 Sangbum Choi, DaeHo Kim
