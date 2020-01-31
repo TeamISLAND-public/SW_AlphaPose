@@ -12,6 +12,7 @@ from EffectStatusBar.EffectstatusBar import EffectStatusBar
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.videoTable = VideoList()
         self.videoPlayer = VideoStreamer()
         self.effectTable = EffectBar()
@@ -20,7 +21,7 @@ class MyApp(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.resize(1100, 800)
+        self.resize(1280, 720)
         self.menu()
         self.statusBar()
 
@@ -57,7 +58,7 @@ class MyApp(QMainWindow):
         self.videoPlayer.set_video(filename[0])
         self.videoTable.add_video(filename[0])
         self.videoTable.doubleClicked.connect(self.change_video)
-        self.videoPlayer.set_maxVolume()
+        # self.videoPlayer.set_maxVolume()
 
         self.videoPlayer.videoPlayer()
 
@@ -65,7 +66,7 @@ class MyApp(QMainWindow):
         for i in self.videoTable.selectedItems():
             self.videoPlayer.set_video(i.text())
 
-        self.videoPlayer.set_maxVolume()
+        # self.videoPlayer.set_maxVolume()
         self.videoPlayer.videoPlayer()
 
     # def saveVideo(self):
