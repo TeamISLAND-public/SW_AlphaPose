@@ -66,7 +66,6 @@ class VideoStreamer(QWidget):
 
     def start(self):
         self.timer.timeout.connect(self.nextFrameSlot)
-        print(self.fps)
         self.timer.start(1000 / self.fps)
 
     def play(self):
@@ -84,7 +83,7 @@ class VideoStreamer(QWidget):
     def set_video(self, name):
         self.time = 0
         self.cap = cv2.VideoCapture(name)
-        self.fps = cv2.CAP_PROP_POS_FRAMES
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.setPosition(0)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
@@ -105,7 +104,11 @@ class VideoStreamer(QWidget):
 
     def setPosition(self, position):
         self.time = position
-        self.cap.set(self.fps, position)
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, position)
+
+    def change_playButtonStatus(self):
+        if not self.playButton.isEnabled():
+            self.playButton.setEnabled(True)
 
     # def videoPlayer(self):
     #     self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
@@ -123,18 +126,6 @@ class VideoStreamer(QWidget):
     #
     #     self.mediaPlayer.error.connect(self.handleError)
     #
-    # def play(self):
-    #     if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-    #         self.mediaPlayer.pause()
-    #     else:
-    #         self.mediaPlayer.play()
-    #
-    # def mediaStateChanged(self):
-    #     if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-    #         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
-    #     else:
-    #         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-    #
     # def controlVolume(self, volume):
     #     self.volumeSlider.setValue(volume)
     #     self.volumeText.setText("{:.1f}%".format((volume / self.maxVolume) * 100))
@@ -147,12 +138,6 @@ class VideoStreamer(QWidget):
     # def setVolume(self, volume):
     #     self.mediaPlayer.setVolume(volume)
     #
-    # def videoDuration(self, duration):
-    #     self.timeBox.changeRange(0, duration)
-    #
-    # def setPosition(self, position):
-    #     self.mediaPlayer.setPosition(position)
-    #
     # def handleError(self):
     #     self.playButton.setEnabled(False)
     #     self.timeBox.changeRange(0, 0)
@@ -162,15 +147,6 @@ class VideoStreamer(QWidget):
     #
     # def set_maxVolume(self):
     #     self.maxVolume = self.mediaPlayer.volume()
-    #
-    # def set_video(self, name):
-    #     self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(name)))
-    #     self.mediaPlayer.setVideoOutput(self.videoWidget)
-    #     self.name = name
-    #
-    def change_playButtonStatus(self):
-        if not self.playButton.isEnabled():
-            self.playButton.setEnabled(True)
     #
     # def delete_mediaPlayer(self):
     #     self.maxVolume = 0
