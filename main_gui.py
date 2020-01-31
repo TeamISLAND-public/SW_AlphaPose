@@ -9,6 +9,7 @@ from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
 
+
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -16,8 +17,8 @@ class MyApp(QMainWindow):
         self.videoPlayer = VideoStreamer()
         self.videoTable = VideoList(self.videoPlayer)
         self.effectTable = EffectBar()
-        self.effectstatusTable = EffectStatusBar()
-        self.effectstatusTable.make_connection(self.effectTable)
+        self.effectStatusTable = EffectStatusBar()
+        self.effectStatusTable.make_connection(self.effectTable)
         self.initUI()
         self.flag = True
 
@@ -33,7 +34,7 @@ class MyApp(QMainWindow):
         layout.setColumnStretch(1, 3)
         layout.addWidget(self.videoTable, 0, 0)
         layout.addWidget(self.effectTable, 1, 0)
-        layout.addWidget(self.effectstatusTable, 1, 1)
+        layout.addWidget(self.effectStatusTable, 1, 1)
         layout.addWidget(self.videoPlayer, 0, 1)
         widget = QWidget()
         widget.setLayout(layout)
