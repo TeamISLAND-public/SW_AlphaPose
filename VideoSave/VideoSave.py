@@ -1,7 +1,7 @@
 import sys
 import cv2
 import os
-from PyQt5.QtWidgets import QProgressBar, QMainWindow, QApplication, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QProgressBar, QMainWindow, QApplication, QVBoxLayout, QWidget, QFileDialog
 
 
 class VideoSave(QMainWindow):
@@ -10,19 +10,14 @@ class VideoSave(QMainWindow):
         super().__init__()
 
         self.progress = QProgressBar(self)
-        self.button = QPushButton("Close", self)
         self.name = name
 
         self.resize(350, 60)
         self.initUI()
 
     def initUI(self):
-        self.button.setEnabled(False)
-        self.button.clicked.connect(self.close)
-
         layout = QVBoxLayout()
         layout.addWidget(self.progress)
-        layout.addWidget(self.button)
 
         widget = QWidget()
         widget.setLayout(layout)
@@ -33,7 +28,8 @@ class VideoSave(QMainWindow):
         cap = cv2.VideoCapture(self.name)
         count = 0
         four_cc = cv2.VideoWriter_fourcc(*'DIVX')
-        out = cv2.VideoWriter('output.avi', four_cc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(3)), int(cap.get(4))))
+        name = QFileDialog.getSaveFileName(self, "Save File", "output.avi", "Videos(*.avi)")
+        out = cv2.VideoWriter(name[0], four_cc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(3)), int(cap.get(4))))
 
         self.progress.setMaximum(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -48,7 +44,6 @@ class VideoSave(QMainWindow):
 
         cap.release()
         out.release()
-        self.button.setEnabled(True)
 
 
 if __name__ == "__main__":

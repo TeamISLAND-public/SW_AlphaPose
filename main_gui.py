@@ -79,9 +79,6 @@ class MyApp(QMainWindow):
         recordWindow = RecordApp.getInstance()
         recordWindow.show()
         recordWindow.start()
-        # self.close()
-        # recordWindow.videoCaptureThread.join()
-        # self.show()
 
     def menu(self):
         menu = self.menuBar()
