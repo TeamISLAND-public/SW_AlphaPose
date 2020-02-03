@@ -26,7 +26,7 @@ class VideoStreamer(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.playButton.setEnabled(False)
+        # self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
@@ -65,6 +65,7 @@ class VideoStreamer(QWidget):
 
     def start(self):
         self.timer.timeout.connect(self.nextFrameSlot)
+        print("start")
         self.timer.start(1000./30)
 
     def play(self):
@@ -94,6 +95,7 @@ class VideoStreamer(QWidget):
 
     def videoPlayer(self):
         self.playButton.clicked.connect(self.play)
+        print("videoPlayer")
         self.timeBox.slider.sliderMoved.connect(self.setPosition)
 
     def videoDuration(self, duration):

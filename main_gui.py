@@ -18,6 +18,7 @@ class MyApp(QMainWindow):
         self.effectTable = EffectBar()
         self.effectstatusTable = EffectStatusBar()
         self.effectstatusTable.make_connection(self.effectTable)
+        self.effectTable.make_connection(self.videoPlayer.timeBox)
         self.initUI()
 
     def initUI(self):

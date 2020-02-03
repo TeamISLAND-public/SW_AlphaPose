@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
 # from Library.test import test
 
 class EffectBar(QDialog):
 
-    sentValue = pyqtSignal(int)
+    sent_type = pyqtSignal(int, int, int)
     no_effect = 5
 
     def __init__(self):
@@ -42,22 +42,30 @@ class EffectBar(QDialog):
     #This definition of effect's might be changed through such as while or for statement in the future
     def effect0_clicked(self):
         self.type = 0
-        self.sentValue.emit(self.type)
+        self.sent_type.emit(self.type, self.current_frame, self.total_frame)
         # test()
-        print(10001)
 
     def effect1_clicked(self):
         self.type = 1
-        self.sentValue.emit(self.type)
+        self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+
 
     def effect2_clicked(self):
         self.type = 2
-        self.sentValue.emit(self.type)
+        self.sent_type.emit(self.type, self.current_frame, self.total_frame)
 
     def effect3_clicked(self):
         self.type = 3
-        self.sentValue.emit(self.type)
+        self.sent_type.emit(self.type, self.current_frame, self.total_frame)
 
     def effect4_clicked(self):
         self.type = 4
-        self.sentValue.emit(self.type)
+        self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+
+    def make_connection(self, class_object):
+        class_object.sent_current_frame.connect(self.PlayBar_Inter_EffectBar)
+
+    @pyqtSlot(int, int)
+    def PlayBar_Inter_EffectBar(self, current_frame, total_frame):
+        self.current_frame = current_frame
+        self.total_frame = total_frame
