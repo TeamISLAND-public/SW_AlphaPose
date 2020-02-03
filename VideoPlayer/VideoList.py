@@ -7,9 +7,10 @@ from VideoPlayer.VideoStreamer import VideoStreamer
 
 class VideoList(QTableWidget):
 
-    def __init__(self):
+    def __init__(self, videoStreamer: VideoStreamer):
         super().__init__()
 
+        self.videoStreamer = videoStreamer
         self.fileNameList = []
         self.setRowCount(0)
         self.setColumnCount(0)
@@ -24,12 +25,12 @@ class VideoList(QTableWidget):
         self.addAction(delete_action)
         delete_action.triggered.connect(self.delete_video)
 
-    def delete_video(self, videoStreamer: VideoStreamer):
+    def delete_video(self):
         for i in self.selectedItems():
             self.fileNameList.remove(self.item(i.row(), 0).text())
             self.removeRow(i.row())
-            # if videoStreamer.name == self.item(i.row(), 0).text():
-            #     videoStreamer.delete_mediaPlayer()
+            # if self.videoStreamer.name == self.item(i.row(), 0).text():
+            #     self.videoStreamer.delete_mediaPlayer()
 
     def add_video(self, name):
         self.fileNameList.append(name)
