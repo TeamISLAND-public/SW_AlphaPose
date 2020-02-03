@@ -11,3 +11,5 @@ __pycache__/
 *.mp4
 /*.avi
 /*.mp4
+/temp
+/temp/

@@ -1,7 +1,6 @@
 import sys
 import cv2
-import os
-from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QFileDialog, QProgressBar, QMainWindow
+from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
 
@@ -18,8 +17,6 @@ class VideoStreamer(QWidget):
         self.playButton = QPushButton()
         self.volumeSlider = QSlider(Qt.Vertical)
         self.volumeText = QLabel("0.0%")
-        # self.videoWidget = QVideoWidget()
-        # self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.video = QLabel()
         self.timer = QTimer()
 
@@ -31,7 +28,6 @@ class VideoStreamer(QWidget):
         self.playButton.clicked.connect(self.play)
         self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
-        # self.videoWidget.resize(640, 480)
 
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
@@ -41,7 +37,6 @@ class VideoStreamer(QWidget):
         grid.addWidget(self.volumeSlider, 0, 0)
         grid.addWidget(self.volumeText, 1, 0)
         grid.addWidget(self.playButton, 1, 1)
-        # grid.addWidget(self.videoWidget, 0, 2)
         grid.addWidget(self.video, 0, 2)
         grid.addWidget(self.timeBox, 1, 2)
 
@@ -117,46 +112,11 @@ class VideoStreamer(QWidget):
         self.timeBox.changeRange(0, 0)
 
     def save_video(self):
+        if not self.name:
+            return
+
         videoSave = VideoSave(self.name)
         videoSave.saveVideo()
-
-    # def videoPlayer(self):
-    #     self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
-    #
-    #     # video controller
-    #     self.playButton.clicked.connect(self.play)
-    #     self.timeBox.slider.sliderMoved.connect(self.setPosition)
-    #     self.mediaPlayer.positionChanged.connect(self.timeBox.controlVideo)
-    #     self.mediaPlayer.durationChanged.connect(self.videoDuration)
-    #
-    #     # audio controller
-    #     self.volumeSlider.sliderMoved.connect(self.setVolume)
-    #     self.mediaPlayer.volumeChanged.connect(self.controlVolume)
-    #     self.volumeDuration(self.mediaPlayer.volume())
-    #
-    #     self.mediaPlayer.error.connect(self.handleError)
-    #
-    # def controlVolume(self, volume):
-    #     self.volumeSlider.setValue(volume)
-    #     self.volumeText.setText("{:.1f}%".format((volume / self.maxVolume) * 100))
-    #
-    # def volumeDuration(self, duration):
-    #     self.volumeSlider.setRange(0, duration)
-    #     self.volumeSlider.setValue(self.mediaPlayer.volume())
-    #     self.volumeText.setText("100.0%")
-    #
-    # def setVolume(self, volume):
-    #     self.mediaPlayer.setVolume(volume)
-    #
-    # def handleError(self):
-    #     self.playButton.setEnabled(False)
-    #     self.timeBox.changeRange(0, 0)
-    #     self.volumeSlider.setRange(0, 0)
-    #     self.volumeText.clear()
-    #     self.setStatusTip("Error: " + self.mediaPlayer.errorString())
-    #
-    # def set_maxVolume(self):
-    #     self.maxVolume = self.mediaPlayer.volume()
 
 
 if __name__ == "__main__":
