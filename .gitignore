@@ -8,3 +8,6 @@ __pycache__/
 
 # ignore test files
 *.avi
+*.mp4
+/*.avi
+/*.mp4
