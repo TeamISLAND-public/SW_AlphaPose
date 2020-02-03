@@ -1,6 +1,6 @@
 import sys
 import cv2
-from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout
+from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
 
@@ -13,6 +13,7 @@ class VideoStreamer(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.name = None
         self.timeBox = PlayBar()
         self.playButton = QPushButton()
         self.volumeSlider = QSlider(Qt.Vertical)
@@ -113,9 +114,16 @@ class VideoStreamer(QWidget):
 
     def save_video(self):
         if not self.name:
+            errorbox = QMessageBox()
+            errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)
             return
 
+        if self.timer.isActive():
+            self.timer.stop()
+            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+
         videoSave = VideoSave(self.name)
+        videoSave.show()
         videoSave.saveVideo()
 
 

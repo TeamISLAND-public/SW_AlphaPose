@@ -28,7 +28,6 @@ class VideoSave(QMainWindow):
         widget.setLayout(layout)
 
         self.setCentralWidget(widget)
-        self.show()
 
     def saveVideo(self):
         cap = cv2.VideoCapture(self.name)
