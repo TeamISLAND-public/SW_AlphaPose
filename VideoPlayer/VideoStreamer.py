@@ -49,6 +49,7 @@ class VideoStreamer(QWidget):
         if not self.ret:
             self.play()
             return
+
         img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
         pix = QPixmap.fromImage(img)
         resized_pix = pix.scaled(640, 480)
@@ -65,6 +66,7 @@ class VideoStreamer(QWidget):
         self.timer.start(1000 / self.fps)
 
     def play(self):
+        # if video finishes
         if not self.ret and not self.timer.isActive():
             self.setPosition(0)
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
@@ -113,6 +115,7 @@ class VideoStreamer(QWidget):
         self.timeBox.changeRange(0, 0)
 
     def save_video(self):
+        # if video doesn't exist
         if not self.name:
             errorbox = QMessageBox()
             errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)

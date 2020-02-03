@@ -47,6 +47,7 @@ class RecordApp(QMainWindow):
         self.show()
 
     def start(self):
+        # if user tries to open webcam when webcam is already opened
         if self.running:
             errorbox = QMessageBox()
             errorbox.warning(self, "Error Message", "Webcam is already opened.", QMessageBox.Ok)
@@ -57,13 +58,10 @@ class RecordApp(QMainWindow):
         self.videoCaptureThread.start()
 
     def stop(self):
-        try:
-            self.running = False
-            self.videoCaptureThread.join()
-            self.cap.release()
-            self.close()
-        except Exception as ex:
-            print(ex)
+        self.running = False
+        self.videoCaptureThread.join()
+        self.cap.release()
+        self.close()
 
     def run(self):
         self.cap = cv2.VideoCapture(0)
@@ -93,11 +91,8 @@ class RecordApp(QMainWindow):
     def record(self):
         self.recording = True
         self.recordButton.setEnabled(False)
-        try:
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            self.video_writer = cv2.VideoWriter("output.avi", fourcc, 20, (640, 480))
-        except Exception as ex:
-            print(ex)
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.video_writer = cv2.VideoWriter("output.avi", fourcc, 20, (640, 480))
 
 
 if __name__ == "__main__":
