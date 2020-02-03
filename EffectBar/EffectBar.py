@@ -43,6 +43,7 @@ class EffectBar(QDialog):
     def effect0_clicked(self):
         self.type = 0
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+        # print(self.current_frame)
         # test()
 
     def effect1_clicked(self):

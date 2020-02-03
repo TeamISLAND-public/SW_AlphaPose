@@ -8,6 +8,8 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 __all__ = ['QRangeSlider']
+total_frame = None
+current_frame = None
 
 DEFAULT_CSS = """
 QRangeSlider * {
@@ -37,7 +39,6 @@ QRangeSlider > QSplitter::handle:pressed {
 }
 """
 
-
 def scale(val, src, dst):
     """
     Scale the given value from the scale of src to the scale of dst.
@@ -45,13 +46,12 @@ def scale(val, src, dst):
     print(val,src,dst)
     return int(((val - src[0]) / float(src[1]-src[0])) * (dst[1]-dst[0]) + dst[0])
 
-
 class Ui_Form(object):
     """default range slider form"""
 
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("QRangeSlider"))
-        Form.resize(300, 30)
+        Form.resize(300, 15)
         Form.setStyleSheet(_fromUtf8(DEFAULT_CSS))
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -170,7 +170,6 @@ class Handle(Element):
     def mousePressEvent(self, event):
         setattr(self, '__mx', event.globalX())
 
-
 class QRangeSlider(QWidget, Ui_Form):
     """
     The QRangeSlider class implements a horizontal range slider widget.
@@ -234,7 +233,7 @@ class QRangeSlider(QWidget, Ui_Form):
     _SPLIT_START = 1
     _SPLIT_END = 2
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, current_frame=current_frame, total_frame=total_frame):
         """Create a new QRangeSlider instance.
             :param parent: QWidget parent
             :return: New QRangeSlider instance.
@@ -271,11 +270,16 @@ class QRangeSlider(QWidget, Ui_Form):
         self._tail_layout.addWidget(self.tail)
 
         # defaults
+        self.current_frame_offset = 100
         self.setMin(0)
-        self.setMax(99)
-        self.setStart(1)
-        self.setEnd(2)
-        self.setDrawValues(True)
+        self.setMax(total_frame)
+        self.setStart(current_frame)
+        if current_frame + self.current_frame_offset < total_frame:
+            self.setEnd(current_frame+self.current_frame_offset)
+        else :
+            self.setEnd(total_frame)
+        # Enabling the text of current frame in _splitters
+        self.setDrawValues(False)
 
     def min(self):
         """:return: minimum value"""
@@ -290,12 +294,14 @@ class QRangeSlider(QWidget, Ui_Form):
         assert type(value) is int
         setattr(self, '__min', value)
         self.minValueChanged.emit(value)
+        print("setMin", value)
 
     def setMax(self, value):
         """sets maximum value"""
         assert type(value) is int
         setattr(self, '__max', value)
         self.maxValueChanged.emit(value)
+        print("setMax", value)
 
     def start(self):
         """:return: range slider start value"""
@@ -309,8 +315,7 @@ class QRangeSlider(QWidget, Ui_Form):
         """stores the start value only"""
         setattr(self, '__start', value)
         self.startValueChanged.emit(value)
-        print("_setStart")
-        print(value)
+        print("_setStart", value)
 
     def setStart(self, value):
         """sets the range slider start value"""
@@ -327,8 +332,7 @@ class QRangeSlider(QWidget, Ui_Form):
         """stores the end value only"""
         setattr(self, '__end', value)
         self.endValueChanged.emit(value)
-        print("_setEnd")
-        print(value)
+        print("_setEnd", value)
 
     def setEnd(self, value):
         """set the range slider end value"""
@@ -391,17 +395,18 @@ class QRangeSlider(QWidget, Ui_Form):
 
     def _posToValue(self, xpos):
         """converts local pixel x coord to slider value"""
-        print("postoval")
+        print("postoval",self.width())
         return scale(xpos, (0, self.width()), (self.min(), self.max()))
 
     def _handleMoveSplitter(self, xpos, index):
         """private method for handling moving splitter handles"""
         hw = self._splitter.handleWidth()
-
+        print(hw)
         def _lockWidth(widget):
             width = widget.size().width()
             widget.setMinimumWidth(width)
             widget.setMaximumWidth(width)
+            print("_lockWidth",width)
 
         def _unlockWidth(widget):
             widget.setMinimumWidth(0)

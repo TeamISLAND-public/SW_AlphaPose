@@ -45,6 +45,7 @@ class EffectStatusBar(QTableWidget):
         currentRowCount = self.rowCount()
         self.insertRow(currentRowCount)
         self.setItem(currentRowCount, 0, QTableWidgetItem("{}{}{}".format(type,current_frame,total_frame)))   # Inserting item and cellwidget
-        # QRangeSlider = self.QRangeSlider.setMax(total_frame)
-        self.setCellWidget(currentRowCount, 1, QRangeSlider())
+        # QRangeSlider = self.QRangeSlider().setMax(total_frame)
+        print(current_frame, total_frame)
+        self.setCellWidget(currentRowCount, 1, QRangeSlider(None, current_frame, total_frame))
         self.horizontalHeader().setStretchLastSection(True)
