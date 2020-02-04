@@ -3,6 +3,7 @@
 .idea/
 
 # ignore cached files
+/__pycache__/
 __pycache__/
 *.pyc
 
@@ -11,3 +12,5 @@ __pycache__/
 *.mp4
 /*.avi
 /*.mp4
+/temp
+/temp/

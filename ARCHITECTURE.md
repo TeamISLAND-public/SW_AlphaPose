@@ -10,11 +10,11 @@ We will offer fully automatic software, also maintaining the idea of design.
 #### GUI/UI Expectation Picture
 Expectation
 
-![](Image/Architecture/GUI_Version1.2.png)
+![](Image/Architecture/GUI_Version1.3.png)
 
 Current
 
-![](Image/Result/GUI_Program2.png)
+![](Image/Result/GUI_Program3.png)
 
 #### Development Expectation Picture
 <div align="center">
