@@ -24,7 +24,7 @@ class VideoStreamer(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.playButton.setEnabled(False)
+        # self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
         self.timeBox.changeRange(0, 0)
@@ -64,6 +64,7 @@ class VideoStreamer(QWidget):
     def start(self):
         self.timer.timeout.connect(self.nextFrameSlot)
         self.timer.start(1000 / self.fps)
+
 
     def play(self):
         # if video finishes
