@@ -48,6 +48,7 @@ class VideoStreamer(QWidget):
 
     def nextFrameSlot(self):
         self.ret, frame = self.cap.read()
+        # if video video finishes
         if not self.ret:
             self.play()
             return

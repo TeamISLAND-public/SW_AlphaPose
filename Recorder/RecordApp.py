@@ -68,6 +68,7 @@ class RecordApp(QMainWindow):
 
     def stream(self):
         ret, frame = self.cap.read()
+        # if streaming finishes
         if not ret:
             return
 

@@ -11,6 +11,7 @@ from EffectStatusBar.EffectstatusBar import EffectStatusBar
 
 
 class MyApp(QMainWindow):
+
     def __init__(self):
         super().__init__()
 
