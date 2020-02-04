@@ -12,15 +12,8 @@ from detectron2.utils.video_visualizer import VideoVisualizer
 from detectron2.utils.visualizer import ColorMode
 
 
-class PredictionDemo(object):
+class VisualizationDemo(object):
     def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
-        """
-        Args:
-            cfg (CfgNode):
-            instance_mode (ColorMode):
-            parallel (bool): whether to run the model in different processes from visualization.
-                Useful since the visualization logic can be slow.
-        """
         self.metadata = MetadataCatalog.get(
             cfg.DATASETS.TEST[0] if len(cfg.DATASETS.TEST) else "__unused"
         )
@@ -31,8 +24,9 @@ class PredictionDemo(object):
         if parallel:
             num_gpu = torch.cuda.device_count()
             self.predictor = AsyncPredictor(cfg, num_gpus=num_gpu)
-        else:
-            self.predictor = DefaultPredictor(cfg)
+        # Useless due to saving predictors
+        # else:
+        #     self.predictor = DefaultPredictor(cfg)
 
     def _frame_from_video(self, video):
         while video.isOpened():
@@ -42,24 +36,25 @@ class PredictionDemo(object):
             else:
                 break
 
-    def run_on_video(self, video):
+    def run_on_video(self, video, loaded_json):
         video_visualizer = VideoVisualizer(self.metadata, self.instance_mode)
 
         def process_predictions(cnt, frame, predictions):
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             if "panoptic_seg" in predictions:
-                panoptic_seg, segments_info = predictions["panoptic_seg"]
-                return cnt, panoptic_seg, segments_info
+                vis_frame = video_visualizer.draw_panoptic_seg_predictions(
+                    frame, panoptic_seg.to(self.cpu_device), segments_info
+                )
             elif "instances" in predictions:
-                print("instances")
-                predictions = predictions["instances"].to(self.cpu_device)
-                return cnt, predictions
+                print("video instances")
+                predictions = loaded_json[cnt]
+                vis_frame = video_visualizer.draw_instance_predictions(cnt, frame, predictions)
             elif "sem_seg" in predictions:
                 print("sem_seg")
-                vis_frame = video_visualizer.draw_sem_seg(
-                    frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
-                )
-                return  cnt, vis_frame
+
+            # Converts Matplotlib RGB format to OpenCV BGR format
+            vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
+            return vis_frame
 
         frame_gen= self._frame_from_video(video)
         if self.parallel:
@@ -69,21 +64,18 @@ class PredictionDemo(object):
             for cnt, frame in enumerate(frame_gen):
                 # print(cnt,1)
                 frame_data.append(frame)
-                self.predictor.put(frame)
 
                 if cnt >= buffer_size:
                     frame = frame_data.popleft()
-                    predictions = self.predictor.get()
                     yield process_predictions(frame, predictions)
 
             while len(frame_data):
                 frame = frame_data.popleft()
-                predictions = self.predictor.get()
                 yield process_predictions(frame, predictions)
         else:
             for cnt, frame in enumerate(frame_gen):
                 # print("non-parallel prediction",cnt)
-                yield process_predictions(cnt, frame, self.predictor(frame))
+                yield process_predictions(cnt, frame, predictions)
 
 
 class AsyncPredictor:

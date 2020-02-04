@@ -96,8 +96,7 @@ class VisualizationDemo(object):
             elif "instances" in predictions:
                 print("video instances")
                 predictions = predictions["instances"].to(self.cpu_device)
-                # print(predictions.pred_masks)
-                instances_json = cnt, predictions
+                vis_frame = video_visualizer.draw_instance_predictions(cnt, frame, predictions)
             elif "sem_seg" in predictions:
                 print("sem_seg")
                 vis_frame = video_visualizer.draw_sem_seg(
@@ -105,8 +104,8 @@ class VisualizationDemo(object):
                 )
 
             # Converts Matplotlib RGB format to OpenCV BGR format
-            # vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
-            return instances_json
+            vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
+            return vis_frame
 
         frame_gen= self._frame_from_video(video)
         if self.parallel:
