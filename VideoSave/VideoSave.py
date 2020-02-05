@@ -1,6 +1,5 @@
 import sys
 import cv2
-import os
 from PyQt5.QtWidgets import QProgressBar, QMainWindow, QApplication, QVBoxLayout, QWidget, QFileDialog
 
 

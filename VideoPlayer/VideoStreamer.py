@@ -24,11 +24,13 @@ class VideoStreamer(QWidget):
         self.initUI()
 
     def initUI(self):
-        # self.playButton.setEnabled(False)
+        self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
         self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
+
+        self.video.setMouseTracking(False)
 
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
@@ -46,6 +48,7 @@ class VideoStreamer(QWidget):
 
     def nextFrameSlot(self):
         self.ret, frame = self.cap.read()
+        # if video video finishes
         if not self.ret:
             self.play()
             return
@@ -64,7 +67,6 @@ class VideoStreamer(QWidget):
     def start(self):
         self.timer.timeout.connect(self.nextFrameSlot)
         self.timer.start(1000 / self.fps)
-
 
     def play(self):
         # if video finishes
@@ -129,6 +131,30 @@ class VideoStreamer(QWidget):
         videoSave = VideoSave(self.name)
         videoSave.show()
         videoSave.saveVideo()
+
+    def mouseDoubleClickEvent(self, pos):
+        # if video doesn't exist
+        if not self.name:
+            errorbox = QMessageBox()
+            errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)
+            return
+
+        # coordinate of videos's left top position is (82, 9)
+        x = pos.x() - 82
+        y = pos.y() - 9
+        if not (0 <= x <= 640 and 0 <= y <= 480):
+            errorbox = QMessageBox()
+            errorbox.warning(self, "Error Message", "Out of boundary!", QMessageBox.Ok)
+            return
+
+        height = self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        weight = self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+
+        # real position in video
+        real_x = int(x / 640 * weight)
+        real_y = int(y / 480 * height)
+
+        print(real_x, real_y)
 
 
 if __name__ == "__main__":
