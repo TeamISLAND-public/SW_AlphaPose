@@ -36,22 +36,26 @@ class VisualizationDemo(object):
             else:
                 break
 
-    def run_on_video(self, video, loaded_json):
+    def run_on_video(self, video, predictions):
         video_visualizer = VideoVisualizer(self.metadata, self.instance_mode)
 
         def process_predictions(cnt, frame, predictions):
+
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
             if "panoptic_seg" in predictions:
-                vis_frame = video_visualizer.draw_panoptic_seg_predictions(
-                    frame, panoptic_seg.to(self.cpu_device), segments_info
-                )
+                # vis_frame = video_visualizer.draw_panoptic_seg_predictions(
+                #     frame, panoptic_seg.to(self.cpu_device), segments_info
+                # )
+                vis_frame = 0
             elif "instances" in predictions:
                 print("video instances")
-                predictions = loaded_json[cnt]
                 vis_frame = video_visualizer.draw_instance_predictions(cnt, frame, predictions)
             elif "sem_seg" in predictions:
                 print("sem_seg")
+                vis_frame = None
 
+            vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
             # Converts Matplotlib RGB format to OpenCV BGR format
             vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
             return vis_frame
@@ -75,7 +79,8 @@ class VisualizationDemo(object):
         else:
             for cnt, frame in enumerate(frame_gen):
                 # print("non-parallel prediction",cnt)
-                yield process_predictions(cnt, frame, predictions)
+                if predictions[cnt]['current_frame'] == cnt:
+                    yield process_predictions(cnt, frame, predictions[cnt])
 
 
 class AsyncPredictor:

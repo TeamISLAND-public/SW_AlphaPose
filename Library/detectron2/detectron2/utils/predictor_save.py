@@ -1,9 +1,10 @@
-class PredictorSave:
-    def __init__(self, current_frame, predictions):
-        self.predictions = predictions
-        self.current_frame = current_frame
+import numpy as np
 
-    def save_instance_predictions(self, predictions):
+class PredictorSave:
+    def __init__(self):
+        self.has = []
+
+    def save_instance_predictions(self, current_frame, predictions):
         num_instances = len(predictions)
         if num_instances == 0:
             return None
@@ -13,3 +14,14 @@ class PredictorSave:
         classes = predictions.pred_classes.numpy() if predictions.has("pred_classes") else None
         keypoints = predictions.pred_keypoints if predictions.has("pred_keypoints") else None
 
+        if predictions.has("pred_masks"):
+            masks = predictions.pred_masks
+        else:
+            masks = None
+        return current_frame, num_instances, boxes, scores, classes, keypoints, masks
+
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return obj

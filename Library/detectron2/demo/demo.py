@@ -5,6 +5,7 @@ import multiprocessing as mp
 import os
 import time
 import cv2
+import torch
 import tqdm
 import json
 import numpy
@@ -13,7 +14,7 @@ import numpy
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.utils.video_visualizer import VideoVisualizer
-from detectron2.utils.visualizer import ColorMode, Visualizer
+from detectron2.utils.predictor_save import PredictorSave
 from detectron2.utils.logger import setup_logger
 
 from predictor import PredictionDemo
@@ -85,73 +86,58 @@ if __name__ == "__main__":
         num_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         basename = os.path.basename(args.video_input)
 
-        if args.output:
-            if os.path.isdir(args.output):
-                output_fname = os.path.join(args.output, basename)
-                output_fname = os.path.splitext(output_fname)[0]
-            else:
-                output_fname = args.output
-            assert not os.path.isfile(output_fname), output_fname
-        assert os.path.isfile(args.video_input)
+        output_fname = os.path.splitext(basename)[0]
+        print(output_fname)
 
         try:
-            f = open("{}.json".format(output_fname))
-            loaded_json = json.load(f)
-            for x in loaded_json:
-                print(x)
-                # print(loaded_json[x])
-            # Temporary unlock
-            # output_file = cv2.VideoWriter(
-            #     filename=output_fname,
-            #     # some installation of opencv may not support x264 (due to its license),
-            #     # you can try other format (e.g. MPEG)
-            #     fourcc=cv2.VideoWriter_fourcc(*"MP4V"),
-            #     fps=float(frames_per_second),
-            #     frameSize=(width, height),
-            #     isColor=True,
-            # )
-            # for vis_frame in tqdm.tqdm(visualizer.run_on_video(video), total=num_frames):
-            #     if args.output:
-            #         output_file.write(vis_frame)
-            #     else:
-            #         cv2.namedWindow(basename, cv2.WINDOW_NORMAL)
-            #         cv2.imshow(basename, vis_frame)
-            #         if cv2.waitKey(1) == 27:
-            #             break  # esc to quit
-            # video.release()
-            # if args.output:
-            #     output_file.release()
-            # else:
-            #     cv2.destroyAllWindows()
+            prediction_result = torch.load('{}.pt'.format(output_fname)) #pt file is called Panther, a visual programming toolkit
+            print(prediction_result[0]["current_frame"])
+            output_file = cv2.VideoWriter(
+                filename=output_fname,
+                # some installation of opencv may not support x264 (due to its license),
+                # you can try other format (e.g. MPEG)
+                fourcc=cv2.VideoWriter_fourcc(*"MP4V"),
+                fps=float(frames_per_second),
+                frameSize=(width, height),
+                isColor=True,
+            )
+            for vis_frame in tqdm.tqdm(visualizer.run_on_video(video, prediction_result), total=num_frames):
+                if args.output:
+                    output_file.write(vis_frame)
+                else:
+                    cv2.namedWindow(basename, cv2.WINDOW_NORMAL)
+                    cv2.imshow(basename, vis_frame)
+                    if cv2.waitKey(1) == 27:
+                        break  # esc to quit
+            video.release()
+            if args.output:
+                output_file.release()
+            else:
+                cv2.destroyAllWindows()
 
         except IOError:
             predictor_data = []
+            item_list = ['num_instances','boxes','scores','classes','keypoints','masks']
             for predictions in tqdm.tqdm(predictor.run_on_video(video), total=num_frames):
                 cnt = predictions[0]
                 prediction = predictions[1]
-                item = {"current_frame": cnt}
 
-                num_instances = len(predictions)
-                # if num_instances == 0:
-                #     return None
-                #
-                # boxes = predictions.pred_boxes.tensor.numpy() if predictions.has("pred_boxes") else None
-                # scores = predictions.scores if predictions.has("scores") else None
-                # classes = predictions.pred_classes.numpy() if predictions.has("pred_classes") else None
-                # keypoints = predictions.pred_keypoints if predictions.has("pred_keypoints") else None
+                predictor_save = PredictorSave()
+                current_frame, num_instances, boxes, scores, classes, keypoints, masks = predictor_save.save_instance_predictions(cnt, prediction)
+
+                item = {"current_frame": current_frame}
 
                 item["num_instances"] = num_instances
-                # item["boxes"] = boxes
+                item["boxes"] = boxes
+                item["scores"] = scores
+                item["classes"] = classes
+                item["keypoints"] = keypoints
+                item["masks"] = masks
 
                 predictor_data.append(item)
+                print(masks.type())
                 print(predictor_data)
-                # if predictions[1].has("pred_masks"):
-                #     masks = predictions[1].pred_masks
-                # frame = predictions[0]
-                # a = (masks.any(dim=0) > 0).numpy() if masks is not None else None
-                # masks_numpy = a * 1
-                # masks_numpy = masks_numpy.tolist()
-            jsonData=json.dumps(item)
+                torch.save(predictor_data, '{}.pt'.format(output_fname))
                 # json_data[frame] = predictions[1]
-            with open("{}.json".format(output_fname), "w") as write_file:
-                 json.dump(jsonData, write_file)
+            # with open("{}.json".format(output_fname), "w") as out_file:
+            #      json.dump(predictor_data, out_file)

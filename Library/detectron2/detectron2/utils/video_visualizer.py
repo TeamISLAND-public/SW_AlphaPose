@@ -64,22 +64,17 @@ class VideoVisualizer:
             output (VisImage): image object with visualizations.
         """
         frame_visualizer = Visualizer(frame, self.metadata)
-        num_instances = len(predictions)
+
+        cnt = predictions["current_frame"]
+        num_instances = predictions["num_instances"]
         if num_instances == 0:
             return frame_visualizer.output
 
-        boxes = predictions.pred_boxes.tensor.numpy() if predictions.has("pred_boxes") else None
-        scores = predictions.scores if predictions.has("scores") else None
-        classes = predictions.pred_classes.numpy() if predictions.has("pred_classes") else None
-        keypoints = predictions.pred_keypoints if predictions.has("pred_keypoints") else None
-
-        if predictions.has("pred_masks"):
-            masks = predictions.pred_masks
-            # mask IOU is not yet enabled
-            # masks_rles = mask_util.encode(np.asarray(masks.permute(1, 2, 0), order="F"))
-            # assert len(masks_rles) == num_instances
-        else:
-            masks = None
+        boxes = predictions["boxes"]
+        scores = predictions["scores"]
+        classes = predictions["classes"]
+        keypoints = predictions["keypoints"]
+        masks = predictions["masks"]
 
         detected = [
             _DetectedInstance(classes[i], boxes[i], mask_rle=None, color=None, ttl=8)
@@ -98,9 +93,9 @@ class VideoVisualizer:
         else:
             alpha = 0.5
 
-        frame_visualizer.overlay_instances(
+        frame_visualizer.overlay_instances_scanning(
             boxes=None if masks is not None else boxes,  # boxes are a bit distracting
-            # cnt=cnt,
+            cnt=cnt,
             masks=masks,
             labels=labels,
             keypoints=keypoints,
