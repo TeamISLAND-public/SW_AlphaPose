@@ -8,6 +8,7 @@ from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
+from Library.detectron2.demo.demo import Demo
 
 
 class MyApp(QMainWindow):
@@ -45,6 +46,7 @@ class MyApp(QMainWindow):
 
     def open_video(self):
         filename = QFileDialog.getOpenFileName(self, "Open file", os.getcwd(), "Video files(*.mp4 *.mkv *.avi)")
+        print(filename[0],filename[1])
 
         # if Video is already opened
         if filename[0] in self.videoTable.fileNameList:
@@ -64,6 +66,7 @@ class MyApp(QMainWindow):
         else:
             self.videoPlayer.change_video(filename[0])
         self.videoTable.add_video(filename[0])
+        Demo(filename[0])
         self.videoTable.doubleClicked.connect(self.change_video)
         # self.videoPlayer.set_maxVolume()
 
