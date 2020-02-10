@@ -1,6 +1,6 @@
 import sys
 import cv2
-import os
+from moviepy.editor import AudioFileClip, VideoFileClip
 from PyQt5.QtWidgets import QProgressBar, QMainWindow, QApplication, QVBoxLayout, QWidget, QFileDialog
 
 
@@ -29,6 +29,10 @@ class VideoSave(QMainWindow):
         count = 0
         four_cc = cv2.VideoWriter_fourcc(*'DIVX')
         name = QFileDialog.getSaveFileName(self, "Save File", "output.avi", "Videos(*.avi)")
+        # if user doesn't select file directory
+        if not name[0]:
+            return
+
         out = cv2.VideoWriter(name[0], four_cc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(3)), int(cap.get(4))))
 
         self.progress.setMaximum(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -44,6 +48,11 @@ class VideoSave(QMainWindow):
 
         cap.release()
         out.release()
+
+        audio = AudioFileClip(self.name)
+        video = VideoFileClip(name[0])
+        result = video.set_audio(audio)
+        result.write_videofile(name[0].replace(".avi", ".mp4"))
 
 
 if __name__ == "__main__":

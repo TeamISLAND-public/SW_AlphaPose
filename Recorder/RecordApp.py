@@ -3,7 +3,6 @@ import cv2
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QWidget, QVBoxLayout, QMessageBox, QApplication, QFileDialog
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
-import threading
 
 
 class RecordApp(QMainWindow):
@@ -58,46 +57,18 @@ class RecordApp(QMainWindow):
         self.cap = cv2.VideoCapture(0)
         self.run()
 
-        # self.videoCaptureThread = threading.Thread(target=self.run)
-        # self.videoCaptureThread.daemon = True
-        # self.videoCaptureThread.start()
-
     def stop(self):
-        # self.running = False
-        # self.videoCaptureThread.join()
         self.cap.release()
         self.timer.stop()
         self.close()
 
     def run(self):
         self.timer.timeout.connect(self.stream)
-        self.timer.start(50)
-        # self.cap = cv2.VideoCapture(0)
-        # self.running = True
-        #
-        # while self.running:
-        #     ret, frame = self.cap.read()
-        #     if ret:
-        #         img = frame
-        #         qImg = QImage(img.data, img.shape[1], img.shape[0], QImage.Format_BGR888)
-        #         pixMap = QPixmap.fromImage(qImg)
-        #         self.videoStream.setPixmap(pixMap)
-        #
-        #         if self.recording:
-        #             try:
-        #                 self.video_writer.write(frame)
-        #             except Exception as ex:
-        #                 print(ex)
-        #     else:
-        #         errorbox = QMessageBox()
-        #         errorbox.warning(self, "Error Message", "Cannot read frame.", QMessageBox.Ok)
-        #         self.running = False
-        #         self.cap.release()
-        #         self.close()
-        #         break
+        self.timer.start(100 / 3)
 
     def stream(self):
         ret, frame = self.cap.read()
+        # if streaming finishes
         if not ret:
             return
 

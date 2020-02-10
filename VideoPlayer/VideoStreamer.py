@@ -1,5 +1,6 @@
 import sys
 import cv2
+from ffpyplayer.player import MediaPlayer
 from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
@@ -24,19 +25,21 @@ class VideoStreamer(QWidget):
         self.initUI()
 
     def initUI(self):
-        # self.playButton.setEnabled(False)
+        self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
         self.timeBox.changeRange(0, 0)
         self.volumeSlider.setRange(0, 0)
+
+        self.video.setMouseTracking(False)
 
         controlBox = QHBoxLayout()
         controlBox.addWidget(self.playButton)
         controlBox.addWidget(self.timeBox)
 
         grid = QGridLayout()
-        grid.addWidget(self.volumeSlider, 0, 0)
-        grid.addWidget(self.volumeText, 1, 0)
+        # grid.addWidget(self.volumeSlider, 0, 0)
+        # grid.addWidget(self.volumeText, 1, 0)
         grid.addWidget(self.playButton, 1, 1)
         grid.addWidget(self.video, 0, 2)
         grid.addWidget(self.timeBox, 1, 2)
@@ -44,8 +47,10 @@ class VideoStreamer(QWidget):
         self.setLayout(grid)
         self.show()
 
-    def nextFrameSlot(self):
+    def showFrame(self):
         self.ret, frame = self.cap.read()
+        # audio_frame, val = self.audio.get_frame()
+        # if video video finishes
         if not self.ret:
             self.play()
             return
@@ -55,16 +60,18 @@ class VideoStreamer(QWidget):
         resized_pix = pix.scaled(640, 480)
         self.video.setPixmap(resized_pix)
 
+    def nextFrameSlot(self):
+        self.showFrame()
+
         self.setTime()
 
     def setTime(self):
         self.time += 1
-        self.timeBox.controlVideo(self.time, self.cap.get(cv2.CAP_PROP_FPS))
+        self.timeBox.controlVideo(self.time, self.fps)
 
     def start(self):
         self.timer.timeout.connect(self.nextFrameSlot)
         self.timer.start(1000 / self.fps)
-
 
     def play(self):
         # if video finishes
@@ -74,15 +81,18 @@ class VideoStreamer(QWidget):
 
         if self.timer.isActive():
             self.timer.stop()
+            # self.audio.set_pause(True)
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         else:
             self.timer.start()
+            # self.audio.set_pause(False)
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
     def set_video(self, name):
         self.time = 0
         self.name = name
         self.cap = cv2.VideoCapture(self.name)
+        # self.audio = MediaPlayer(self.name)
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.setPosition(0)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
@@ -92,6 +102,7 @@ class VideoStreamer(QWidget):
 
     def change_video(self, name):
         self.cap.release()
+        # self.audio.pause()
         self.killTimer(self.timer.timerId())
         self.timer = QTimer()
         self.set_video(name)
@@ -105,6 +116,7 @@ class VideoStreamer(QWidget):
     def setPosition(self, position):
         self.time = position
         self.cap.set(cv2.CAP_PROP_POS_FRAMES, position)
+        self.showFrame()
 
     def change_playButtonStatus(self):
         if not self.playButton.isEnabled():
@@ -129,6 +141,30 @@ class VideoStreamer(QWidget):
         videoSave = VideoSave(self.name)
         videoSave.show()
         videoSave.saveVideo()
+
+    def mouseDoubleClickEvent(self, pos):
+        # if video doesn't exist
+        if not self.name:
+            errorbox = QMessageBox()
+            errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)
+            return
+
+        # coordinate of videos's left top position is (82, 9)
+        x = pos.x() - 82
+        y = pos.y() - 9
+        if not (0 <= x <= 640 and 0 <= y <= 480):
+            errorbox = QMessageBox()
+            errorbox.warning(self, "Error Message", "Out of boundary!", QMessageBox.Ok)
+            return
+
+        height = self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        weight = self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+
+        # real position in video
+        real_x = int(x / 640 * weight)
+        real_y = int(y / 480 * height)
+
+        print(real_x, real_y)
 
 
 if __name__ == "__main__":

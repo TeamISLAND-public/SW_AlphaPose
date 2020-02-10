@@ -12,6 +12,7 @@ from Library.detectron2.demo.demo import Demo
 
 
 class MyApp(QMainWindow):
+
     def __init__(self):
         super().__init__()
 

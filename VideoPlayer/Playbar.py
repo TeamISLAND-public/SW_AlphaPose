@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import QWidget, QApplication, QSlider, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSignal
 
-class PlayBar(QWidget):
 
+class PlayBar(QWidget):
     sent_current_frame = pyqtSignal(int, int)
 
     def __init__(self):
