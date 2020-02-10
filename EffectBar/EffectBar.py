@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-
-# from Library.test import test
+from Library.detectron2.demo.run_demo import run_demo
 
 class EffectBar(QDialog):
 
@@ -43,28 +42,40 @@ class EffectBar(QDialog):
     def effect0_clicked(self):
         self.type = 0
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+        print(self.video_name)
+        self.demo = run_demo(self.video_name, self.type)
         # print(self.current_frame)
         # test()
 
     def effect1_clicked(self):
         self.type = 1
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-
+        self.demo = run_demo(self.video_name, self.type)
 
     def effect2_clicked(self):
         self.type = 2
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+        self.demo = run_demo(self.video_name, self.type)
 
     def effect3_clicked(self):
         self.type = 3
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+        self.demo = run_demo(self.video_name, self.type)
 
     def effect4_clicked(self):
         self.type = 4
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+        self.demo = run_demo(self.video_name, self.type)
 
-    def make_connection(self, class_object):
+    def playbar_to_effectbar(self, class_object):
         class_object.sent_current_frame.connect(self.PlayBar_Inter_EffectBar)
+
+    def main_to_effectbar(self, class_object):
+        class_object.sent_video_name.connect(self.MainGui_Inter_EffectBar)
+
+    @pyqtSlot(str)
+    def MainGui_Inter_EffectBar(self, video_name):
+        self.video_name = video_name
 
     @pyqtSlot(int, int)
     def PlayBar_Inter_EffectBar(self, current_frame, total_frame):

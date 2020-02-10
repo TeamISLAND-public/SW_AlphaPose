@@ -50,21 +50,9 @@ class VideoVisualizer:
         ], "Other mode not supported yet."
         self._instance_mode = instance_mode
 
-    def draw_instance_predictions(self, frame, predictions):
-        """
-        Draw instance-level prediction results on an image.
+    def draw_instance_predictions(self, frame, predictions, effect_type):
 
-        Args:
-            frame (ndarray): an RGB image of shape (H, W, C), in the range [0, 255].
-            predictions (Instances): the output of an instance detection/segmentation
-                model. Following fields will be used to draw:
-                "pred_boxes", "pred_classes", "scores", "pred_masks" (or "pred_masks_rle").
-
-        Returns:
-            output (VisImage): image object with visualizations.
-        """
         frame_visualizer = Visualizer(frame, self.metadata)
-
         cnt = predictions["current_frame"]
         num_instances = predictions["num_instances"]
         if num_instances == 0:
@@ -93,15 +81,26 @@ class VideoVisualizer:
         else:
             alpha = 0.5
 
-        frame_visualizer.overlay_instances_scanning(
-            boxes=None if masks is not None else boxes,  # boxes are a bit distracting
-            cnt=cnt,
-            masks=masks,
-            labels=labels,
-            keypoints=keypoints,
-            assigned_colors=colors,
-            alpha=alpha,
-        )
+        if effect_type == 0:
+            frame_visualizer.overlay_instances_scanning(
+                boxes=None if masks is not None else boxes,  # boxes are a bit distracting
+                cnt=cnt,
+                masks=masks,
+                labels=labels,
+                keypoints=keypoints,
+                assigned_colors=colors,
+                alpha=alpha,
+            )
+        else:
+            frame_visualizer.overlay_instances_stop_motion(
+                boxes=None if masks is not None else boxes,  # boxes are a bit distracting
+                cnt=cnt,
+                masks=masks,
+                labels=labels,
+                keypoints=keypoints,
+                assigned_colors=colors,
+                alpha=alpha,
+            )
 
         return frame_visualizer.output
 

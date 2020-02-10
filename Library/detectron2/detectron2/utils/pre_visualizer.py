@@ -36,7 +36,7 @@ class VisualizationDemo(object):
             else:
                 break
 
-    def run_on_video(self, video, predictions):
+    def run_on_video(self, video, predictions, effect_type):
         video_visualizer = VideoVisualizer(self.metadata, self.instance_mode)
 
         def process_predictions(cnt, frame, predictions):
@@ -55,7 +55,7 @@ class VisualizationDemo(object):
                 print("sem_seg")
                 vis_frame = None
 
-            vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+            vis_frame = video_visualizer.draw_instance_predictions(frame, predictions, effect_type)
             # Converts Matplotlib RGB format to OpenCV BGR format
             vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
             return vis_frame
