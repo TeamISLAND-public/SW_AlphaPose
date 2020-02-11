@@ -38,11 +38,11 @@ class PlayBar(QWidget):
 
     def controlVideo(self, position, fps):
         self.slider.setValue(position)
-        position = position / fps
-        h = position // 3600
-        m = (position - h * 360000) // 60
-        s = position - h * 3600 - m * 60
-        self.time.setText("{:02d}:{:02d}:{:02d}".format(int(h), int(m), int(s)))
+        position = float(position / fps)
+        m = position // 60
+        s = int(position) - m * 60
+        c = (position - m * 60 - s) * 100
+        self.time.setText("{:02d}:{:02d}:{:02d}".format(int(m), int(s), int(c)))
 
 
 if __name__ == "__main__":
