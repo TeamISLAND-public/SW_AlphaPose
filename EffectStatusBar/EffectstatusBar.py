@@ -36,7 +36,7 @@ class EffectStatusBar(QTableWidget):
             self.removeRow(i.row())
 
     # This line is for EffectBar to EffectStatusBar connection
-    def make_connection(self, class_object):
+    def effectbar_to_effectstatusbar(self, class_object):
         class_object.sent_type.connect(self.EffectBar_Inter_EffectStatusBar)
 
     # pyqtSlot for getting information about which effect was getting as a signal
@@ -46,6 +46,6 @@ class EffectStatusBar(QTableWidget):
         self.insertRow(currentRowCount)
         self.setItem(currentRowCount, 0, QTableWidgetItem("{}{}{}".format(type,current_frame,total_frame)))   # Inserting item and cellwidget
         # QRangeSlider = self.QRangeSlider().setMax(total_frame)
-        print(current_frame, total_frame)
+        # print(current_frame, total_frame)
         self.setCellWidget(currentRowCount, 1, QRangeSlider(None, current_frame, total_frame))
         self.horizontalHeader().setStretchLastSection(True)

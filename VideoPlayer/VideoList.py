@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QAction, QApplicati
 from PyQt5.QtCore import Qt
 
 from VideoPlayer.VideoStreamer import VideoStreamer
-
+from Library.detectron2.demo.open_demo import open_demo
 
 class VideoList(QTableWidget):
 
@@ -37,6 +37,7 @@ class VideoList(QTableWidget):
         currentRowCount = self.rowCount()
         self.insertRow(currentRowCount)
         self.setItem(0, currentRowCount, QTableWidgetItem(name))
+        self.demo = open_demo(name)
         self.resizeColumnsToContents()
 
 
