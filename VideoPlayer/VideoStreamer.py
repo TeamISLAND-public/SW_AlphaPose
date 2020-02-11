@@ -1,7 +1,8 @@
 import sys
 import cv2
-from ffpyplayer.player import MediaPlayer
-from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox
+# from ffpyplayer.player import MediaPlayer
+# from imutils.video import FileVideoStream
+from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox, QProgressBar, QMainWindow
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
 
@@ -20,6 +21,7 @@ class VideoStreamer(QWidget):
         self.volumeText = QLabel("0.0%")
         self.video = QLabel()
         self.timer = QTimer()
+        self.list = []
 
         self.initUI()
 
@@ -47,17 +49,18 @@ class VideoStreamer(QWidget):
         self.show()
 
     def showFrame(self):
-        self.ret, frame = self.cap.read()
+        if self.time < len(self.list):
+            self.ret, frame = self.list[self.time]
+        else:
+            self.ret = None
         # audio_frame, val = self.audio.get_frame()
-        # if video video finishes
+
+        # if video finishes
         if not self.ret:
             self.play()
             return
 
-        img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
-        pix = QPixmap.fromImage(img)
-        resized_pix = pix.scaled(640, 480)
-        self.video.setPixmap(resized_pix)
+        self.video.setPixmap(frame)
 
     def nextFrameSlot(self):
         self.showFrame()
@@ -69,8 +72,10 @@ class VideoStreamer(QWidget):
         self.timeBox.controlVideo(self.time, self.fps)
 
     def start(self):
+        self.timer.setInterval(1000 / self.fps)
         self.timer.timeout.connect(self.nextFrameSlot)
-        self.timer.start(1000 / self.fps)
+        self.timer.start()
+        # self.timer.start(1000 / self.fps)
 
     def play(self):
         # if video finishes
@@ -93,13 +98,38 @@ class VideoStreamer(QWidget):
         self.cap = cv2.VideoCapture(self.name)
         # self.audio = MediaPlayer(self.name)
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
-        self.setPosition(0)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
+        loadingWindow = QMainWindow()
+
+        progress = QProgressBar()
+        progress.setMaximum(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        progress.show()
+
+        loadingWindow.setCentralWidget(progress)
+        loadingWindow.show()
+
+        count = 0
+        progress.setValue(count)
+        while True:
+            ret, frame = self.cap.read()
+            if not ret:
+                break
+
+            img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
+            pix = QPixmap.fromImage(img)
+            resized_pix = pix.scaled(640, 480)
+            self.list.append((ret, resized_pix))
+
+            count += 1
+            progress.setValue(count)
+
+        self.setPosition(0)
         self.videoDuration(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
         self.start()
 
     def change_video(self, name):
+        self.list.clear()
         self.cap.release()
         # self.audio.pause()
         self.killTimer(self.timer.timerId())
@@ -114,7 +144,7 @@ class VideoStreamer(QWidget):
 
     def setPosition(self, position):
         self.time = position
-        self.cap.set(cv2.CAP_PROP_POS_FRAMES, position)
+        # self.cap.set(cv2.CAP_PROP_POS_FRAMES, position)
         self.showFrame()
 
     def change_playButtonStatus(self):
@@ -148,8 +178,8 @@ class VideoStreamer(QWidget):
             errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)
             return
 
-        # coordinate of videos's left top position is (82, 9)
-        x = pos.x() - 82
+        # coordinate of videos's left top position is (44, 9)
+        x = pos.x() - 44
         y = pos.y() - 9
         if not (0 <= x <= 640 and 0 <= y <= 480):
             errorbox = QMessageBox()
