@@ -9,7 +9,6 @@ from PyQt5.QtGui import QImage, QPixmap
 from VideoPlayer.Playbar import PlayBar
 from VideoSave.VideoSave import VideoSave
 
-
 class VideoStreamer(QWidget):
 
     def __init__(self):

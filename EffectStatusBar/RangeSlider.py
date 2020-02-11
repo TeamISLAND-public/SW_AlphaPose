@@ -43,7 +43,7 @@ def scale(val, src, dst):
     """
     Scale the given value from the scale of src to the scale of dst.
     """
-    print(val,src,dst)
+    # print(val,src,dst)
     return int(((val - src[0]) / float(src[1]-src[0])) * (dst[1]-dst[0]) + dst[0])
 
 class Ui_Form(object):
@@ -294,14 +294,14 @@ class QRangeSlider(QWidget, Ui_Form):
         assert type(value) is int
         setattr(self, '__min', value)
         self.minValueChanged.emit(value)
-        print("setMin", value)
+        # print("setMin", value)
 
     def setMax(self, value):
         """sets maximum value"""
         assert type(value) is int
         setattr(self, '__max', value)
         self.maxValueChanged.emit(value)
-        print("setMax", value)
+        # print("setMax", value)
 
     def start(self):
         """:return: range slider start value"""
@@ -315,7 +315,7 @@ class QRangeSlider(QWidget, Ui_Form):
         """stores the start value only"""
         setattr(self, '__start', value)
         self.startValueChanged.emit(value)
-        print("_setStart", value)
+        # print("_setStart", value)
 
     def setStart(self, value):
         """sets the range slider start value"""
@@ -325,14 +325,14 @@ class QRangeSlider(QWidget, Ui_Form):
         self._splitter.moveSplitter(v, self._SPLIT_START)
         self._splitter.splitterMoved.connect(self._handleMoveSplitter)
         self._setStart(value)
-        print("setStart")
-        print(v,value,self.max(),self.min())
+        # print("setStart")
+        # print(v,value,self.max(),self.min())
 
     def _setEnd(self, value):
         """stores the end value only"""
         setattr(self, '__end', value)
         self.endValueChanged.emit(value)
-        print("_setEnd", value)
+        # print("_setEnd", value)
 
     def setEnd(self, value):
         """set the range slider end value"""
@@ -342,8 +342,8 @@ class QRangeSlider(QWidget, Ui_Form):
         self._splitter.moveSplitter(v, self._SPLIT_END)
         self._splitter.splitterMoved.connect(self._handleMoveSplitter)
         self._setEnd(value)
-        print("setEnd")
-        print(v,value,self.max(),self.min())
+        # print("setEnd")
+        # print(v,value,self.max(),self.min())
 
     def drawValues(self):
         """:return: True if slider values will be drawn"""
@@ -390,23 +390,23 @@ class QRangeSlider(QWidget, Ui_Form):
 
     def _valueToPos(self, value):
         """converts slider value to local pixel x coord"""
-        print("valtopos")
+        # print("valtopos")
         return scale(value, (self.min(), self.max()), (0, self.width()))
 
     def _posToValue(self, xpos):
         """converts local pixel x coord to slider value"""
-        print("postoval",self.width())
+        # print("postoval",self.width())
         return scale(xpos, (0, self.width()), (self.min(), self.max()))
 
     def _handleMoveSplitter(self, xpos, index):
         """private method for handling moving splitter handles"""
         hw = self._splitter.handleWidth()
-        print(hw)
+        # print(hw)
         def _lockWidth(widget):
             width = widget.size().width()
             widget.setMinimumWidth(width)
             widget.setMaximumWidth(width)
-            print("_lockWidth",width)
+            # print("_lockWidth",width)
 
         def _unlockWidth(widget):
             widget.setMinimumWidth(0)

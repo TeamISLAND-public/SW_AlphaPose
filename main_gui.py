@@ -8,19 +8,23 @@ from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
+from Library.detectron2.demo.open_demo import open_demo
 
 
 class MyApp(QMainWindow):
+
+    sent_video_name = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
 
         self.videoPlayer = VideoStreamer()
         self.videoTable = VideoList(self.videoPlayer)
-        self.effectTable = EffectBar()
-        self.effectStatusTable = EffectStatusBar()
-        self.effectStatusTable.make_connection(self.effectTable)
-        self.effectTable.make_connection(self.videoPlayer.timeBox)
+        self.effectBar = EffectBar()
+        self.effectStatusBar = EffectStatusBar()
+        self.effectStatusBar.effectbar_to_effectstatusbar(self.effectBar)       #effectstatusbar is getting information about effects
+        self.effectBar.playbar_to_effectbar(self.videoPlayer.timeBox)           #effectbar is getting value of current frame
+        self.effectBar.main_to_effectbar(self)
         self.initUI()
         self.flag = True
 
@@ -35,8 +39,8 @@ class MyApp(QMainWindow):
         layout.setColumnStretch(0, 1)
         layout.setColumnStretch(1, 3)
         layout.addWidget(self.videoTable, 0, 0)
-        layout.addWidget(self.effectTable, 1, 0)
-        layout.addWidget(self.effectStatusTable, 1, 1)
+        layout.addWidget(self.effectBar, 1, 0)
+        layout.addWidget(self.effectStatusBar, 1, 1)
         layout.addWidget(self.videoPlayer, 0, 1)
         widget = QWidget()
         widget.setLayout(layout)
@@ -65,6 +69,8 @@ class MyApp(QMainWindow):
         else:
             self.videoPlayer.change_video(filename[0])
         self.videoTable.add_video(filename[0])
+        # when adding video video_name must be sent
+        self.sent_video_name.emit(filename[0])
         self.videoTable.doubleClicked.connect(self.change_video)
         # self.videoPlayer.set_maxVolume()
 
@@ -73,6 +79,8 @@ class MyApp(QMainWindow):
     def change_video(self, row):
         for i in self.videoTable.selectedItems():
             self.videoPlayer.change_video(i.text())
+            # Not only for adding but also when action was held for change video sent_video_name must emit
+            self.sent_video_name.emit(i.text())
 
         # self.videoPlayer.set_maxVolume()
         self.videoPlayer.videoPlayer()
