@@ -49,8 +49,12 @@ class VideoStreamer(QWidget):
         self.show()
 
     def showFrame(self):
-        self.ret, frame = self.list[self.time]
+        if self.time < len(self.list):
+            self.ret, frame = self.list[self.time]
+        else:
+            self.ret = None
         # audio_frame, val = self.audio.get_frame()
+
         # if video finishes
         if not self.ret:
             self.play()
