@@ -178,9 +178,9 @@ class VideoStreamer(QWidget):
             errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)
             return
 
-        # coordinate of videos's left top position is (44, 9)
-        x = pos.x() - 44
-        y = pos.y() - 9
+        x = pos.x() - self.video.pos().x()
+        y = pos.y() - self.video.pos().y()
+        print(x, y)
         if not (0 <= x <= 640 and 0 <= y <= 480):
             errorbox = QMessageBox()
             errorbox.warning(self, "Error Message", "Out of boundary!", QMessageBox.Ok)
