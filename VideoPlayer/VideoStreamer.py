@@ -2,7 +2,7 @@ import sys
 import cv2
 # from ffpyplayer.player import MediaPlayer
 # from imutils.video import FileVideoStream
-from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox, QProgressBar
+from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox, QProgressBar, QMainWindow
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QImage, QPixmap
 
@@ -50,7 +50,6 @@ class VideoStreamer(QWidget):
         self.show()
 
     def showFrame(self):
-        # self.ret, frame = self.cap.read()
         self.ret, frame = self.list[self.time]
         # audio_frame, val = self.audio.get_frame()
         # if video finishes
@@ -58,10 +57,6 @@ class VideoStreamer(QWidget):
             self.play()
             return
 
-        # img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
-        # pix = QPixmap.fromImage(img)
-        # resized_pix = pix.scaled(640, 480)
-        # self.video.setPixmap(resized_pix)
         self.video.setPixmap(frame)
 
     def nextFrameSlot(self):
@@ -102,15 +97,19 @@ class VideoStreamer(QWidget):
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
+        loadingWindow = QMainWindow()
+
         progress = QProgressBar()
         progress.setMaximum(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
         progress.show()
+
+        loadingWindow.setCentralWidget(progress)
+        loadingWindow.show()
 
         count = 0
         progress.setValue(count)
         while True:
             ret, frame = self.cap.read()
-
             if not ret:
                 break
 
