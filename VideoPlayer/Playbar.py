@@ -20,8 +20,8 @@ class PlayBar(QWidget):
         self.slider.valueChanged.connect(self.current_frame)
 
         layout = QHBoxLayout()
-        layout.addWidget(self.slider)
         layout.addWidget(self.time)
+        layout.addWidget(self.slider)
 
         self.setLayout(layout)
 
