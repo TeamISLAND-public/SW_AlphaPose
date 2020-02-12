@@ -30,15 +30,20 @@ class PlayBar(QWidget):
         total_frame = self.total_frame
         self.sent_current_frame.emit(current_frame, total_frame)
 
-    def changeRange(self, start, finish):
+    def changeRange(self, start, finish, fps):
+        self.fps = fps
         self.slider.setRange(start, finish)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
         self.total_frame = finish    # This was knowing value of finish
         if start == 0 and finish == 0:
             self.time.setText("00:00:00")
+            return
 
-    def controlVideo(self, position, fps):
+        self.slider.setTickInterval(self.fps * 5)
+
+    def controlVideo(self, position):
         self.slider.setValue(position)
-        position = float(position / fps)
+        position = float(position / self.fps)
         m = position // 60
         s = int(position) - m * 60
         c = (position - m * 60 - s) * 100

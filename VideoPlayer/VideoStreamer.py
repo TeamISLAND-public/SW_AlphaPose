@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, 
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
 
-
 from VideoPlayer.Playbar import PlayBar
 from VideoSave.VideoSave import VideoSave
+
 
 class VideoStreamer(QWidget):
 
@@ -30,7 +30,7 @@ class VideoStreamer(QWidget):
         self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
-        self.timeBox.changeRange(0, 0)
+        self.timeBox.changeRange(0, 0, 0)
         self.volumeSlider.setRange(0, 0)
 
         self.video.setMouseTracking(False)
@@ -70,7 +70,7 @@ class VideoStreamer(QWidget):
 
     def setTime(self):
         self.time += 1
-        self.timeBox.controlVideo(self.time, self.fps)
+        self.timeBox.controlVideo(self.time)
 
     def start(self):
         self.timer.setInterval(1000 / self.fps)
@@ -141,7 +141,7 @@ class VideoStreamer(QWidget):
         self.timeBox.slider.sliderMoved.connect(self.setPosition)
 
     def videoDuration(self, duration):
-        self.timeBox.changeRange(0, duration)
+        self.timeBox.changeRange(0, duration, self.fps)
 
     def setPosition(self, position):
         self.time = position
