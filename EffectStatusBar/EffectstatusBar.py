@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QApplication, QHeaderView
+from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QHeaderView
 from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot
 
 from EffectStatusBar.RangeSlider import QRangeSlider
-import sys
 
 class EffectStatusBar(QTableWidget):
     def __init__(self):
@@ -49,3 +48,4 @@ class EffectStatusBar(QTableWidget):
         # print(current_frame, total_frame)
         self.setCellWidget(currentRowCount, 1, QRangeSlider(None, current_frame, total_frame))
         self.horizontalHeader().setStretchLastSection(True)
+        # self.horizontalHeader().setSectionResizeMode(2, QHeaderView.resizeContentsPrecision())

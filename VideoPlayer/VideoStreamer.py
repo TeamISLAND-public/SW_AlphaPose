@@ -3,8 +3,9 @@ import cv2
 # from ffpyplayer.player import MediaPlayer
 # from imutils.video import FileVideoStream
 from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox, QProgressBar, QMainWindow
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
+
 
 from VideoPlayer.Playbar import PlayBar
 from VideoSave.VideoSave import VideoSave
@@ -194,6 +195,24 @@ class VideoStreamer(QWidget):
         real_y = int(y / 480 * height)
 
         print(real_x, real_y)
+
+    def effectbar_to_videostreamer(self, class_object):
+        class_object.sent_video.connect(self.EffectBar_Inter_VideoStreamer)
+
+    # Sending result of video visualization
+    @pyqtSlot(list, int)
+    def EffectBar_Inter_VideoStreamer(self, result_list, current_frame):
+        if self.time < len(self.list):
+            for i in range(29):
+                self.list[current_frame+i] = result_list[i]
+        else:
+            self.ret = None
+        # if video finishes
+        if not self.ret:
+            self.play()
+            return
+
+        # self.video.setPixmap(frame)
 
 
 if __name__ == "__main__":

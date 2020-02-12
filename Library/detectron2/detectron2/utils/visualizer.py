@@ -728,6 +728,7 @@ class Visualizer:
             boxes = self._convert_boxes(boxes)
             num_instances = len(boxes)
         if masks is not None:
+            instance_mask = self._convert_masks(masks)
             if (cnt % 9) == 0 :
                 instance_mask = self._convert_masks(masks)
                 masks = instance_mask
