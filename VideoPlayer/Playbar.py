@@ -61,6 +61,9 @@ class PlayBar(QWidget):
         if self.fps == 0:
             return
 
+        if position > self.slider.maximum():
+            return
+
         self.slider.setValue(position)
         position = float(position / self.fps)
         m = position // 60
