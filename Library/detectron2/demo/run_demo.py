@@ -8,13 +8,8 @@ import tqdm
 
 # config get_cfg, import read_image, import setup_logger is the one that import the file
 from detectron2.config import get_cfg
-from detectron2.utils.predictor_save import PredictorSave
-from detectron2.utils.logger import setup_logger
-
-# from predictor import PredictionDemo
-# from visualizer import VisualizationDemo
-from detectron2.utils.predictor import PredictionDemo
 from detectron2.utils.pre_visualizer import VisualizationDemo
+from PyQt5.QtGui import QImage, QPixmap
 
 # constants
 WINDOW_NAME = "COCO detections"
@@ -64,49 +59,33 @@ def get_parser(video_input):
     return parser
 
 class run_demo:
-    def __init__(self, video_input, effect_type):
+    def __init__(self, video_input, effect_type, current_frame):
         mp.set_start_method("spawn", force=True)
-        args = get_parser(video_input).parse_args()
-        logger = setup_logger()
-        logger.info("Arguments: " + str(args))
+        self.args = get_parser(video_input).parse_args()
+        cfg = setup_cfg(self.args)
 
-        cfg = setup_cfg(args)
+        self.effect_type = effect_type
+        self.current_frame = current_frame
+        self.list = []
+        self.visualizer = VisualizationDemo(cfg)
 
-        visualizer = VisualizationDemo(cfg)
-
+    def run(self):
+        args = self.args
         if args.video_input:
             video = cv2.VideoCapture(args.video_input)
-            width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
-            height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            frames_per_second = video.get(cv2.CAP_PROP_FPS)
             num_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
-            basename = os.path.basename(args.video_input)
             output_fname = os.path.splitext(args.video_input)[0]
 
             try:
-                prediction_result = torch.load('{}.pt'.format(output_fname)) #pt file is called Panther, a visual programming toolkit
-                output_file = cv2.VideoWriter(
-                    filename=output_fname,
-                    # some installation of opencv may not support x264 (due to its license),
-                    # you can try other format (e.g. MPEG)
-                    fourcc=cv2.VideoWriter_fourcc(*"MP4V"),
-                    fps=float(frames_per_second),
-                    frameSize=(width, height),
-                    isColor=True,
-                )
-                for vis_frame in tqdm.tqdm(visualizer.run_on_video(video, prediction_result, effect_type), total=num_frames):
-                    if args.output:
-                        output_file.write(vis_frame)
-                    else:
-                        cv2.namedWindow(basename, cv2.WINDOW_NORMAL)
-                        cv2.imshow(basename, vis_frame)
-                        if cv2.waitKey(1) == 27:
-                            break  # esc to quit
-                video.release()
-                if args.output:
-                    output_file.release()
-                else:
-                    cv2.destroyAllWindows()
+                # pt file is called Panther, a visual programming toolkit
+                prediction_result = torch.load('{}.pt'.format(output_fname))
+                for vis_frame in tqdm.tqdm(self.visualizer.run_on_video(video, prediction_result, self.effect_type, self.current_frame),
+                                           total=num_frames):
+                    img = QImage(vis_frame, vis_frame.shape[1], vis_frame.shape[0], QImage.Format_BGR888)
+                    pix = QPixmap.fromImage(img)
+                    resized_pix = pix.scaled(640, 480)
+                    self.list.append((True, resized_pix))
+                return self.list
 
             except IOError:
                 print("There is no compatible .pt file")
