@@ -51,7 +51,7 @@ class Ui_Form(object):
 
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("QRangeSlider"))
-        Form.resize(300, 15)
+        Form.resize(300, 5)
         Form.setStyleSheet(_fromUtf8(DEFAULT_CSS))
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -270,16 +270,12 @@ class QRangeSlider(QWidget, Ui_Form):
         self._tail_layout.addWidget(self.tail)
 
         # defaults
-        self.current_frame_offset = 100
         self.setMin(0)
         self.setMax(total_frame)
         self.setStart(current_frame)
-        if current_frame + self.current_frame_offset < total_frame:
-            self.setEnd(current_frame+self.current_frame_offset)
-        else :
-            self.setEnd(total_frame)
+        self.setEnd(current_frame+30)
         # Enabling the text of current frame in _splitters
-        self.setDrawValues(False)
+        self.setDrawValues(True)
 
     def min(self):
         """:return: minimum value"""
@@ -315,7 +311,6 @@ class QRangeSlider(QWidget, Ui_Form):
         """stores the start value only"""
         setattr(self, '__start', value)
         self.startValueChanged.emit(value)
-        # print("_setStart", value)
 
     def setStart(self, value):
         """sets the range slider start value"""
@@ -325,8 +320,8 @@ class QRangeSlider(QWidget, Ui_Form):
         self._splitter.moveSplitter(v, self._SPLIT_START)
         self._splitter.splitterMoved.connect(self._handleMoveSplitter)
         self._setStart(value)
-        # print("setStart")
-        # print(v,value,self.max(),self.min())
+        print("setStart")
+        print(v,value,self.max(),self.min())
 
     def _setEnd(self, value):
         """stores the end value only"""
@@ -342,8 +337,8 @@ class QRangeSlider(QWidget, Ui_Form):
         self._splitter.moveSplitter(v, self._SPLIT_END)
         self._splitter.splitterMoved.connect(self._handleMoveSplitter)
         self._setEnd(value)
-        # print("setEnd")
-        # print(v,value,self.max(),self.min())
+        print("setEnd")
+        print(v,value,self.max(),self.min())
 
     def drawValues(self):
         """:return: True if slider values will be drawn"""
@@ -362,22 +357,6 @@ class QRangeSlider(QWidget, Ui_Form):
         """set the start and end values"""
         self.setStart(start)
         self.setEnd(end)
-
-    def keyPressEvent(self, event):
-        """overrides key press event to move range left and right"""
-        key = event.key()
-        if key == QtCore.Qt.Key_Left:
-            s = self.start()-1
-            e = self.end()-1
-        elif key == QtCore.Qt.Key_Right:
-            s = self.start()+1
-            e = self.end()+1
-        else:
-            event.ignore()
-            return
-        event.accept()
-        if s >= self.min() and e <= self.max():
-            self.setRange(s, e)
 
     def setBackgroundStyle(self, style):
         """sets background style"""

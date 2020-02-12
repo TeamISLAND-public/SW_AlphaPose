@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox
+from PyQt5.QtWidgets import QDialog, QPushButton, QVBoxLayout, QScrollArea, QFormLayout, QLabel, QGroupBox, QTabWidget, QWidget
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from Library.detectron2.demo.run_demo import run_demo
 
@@ -12,30 +12,71 @@ class EffectBar(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        formLayout =QFormLayout()
-        groupBox = QGroupBox("Effect")
-        labelLisName = ["Wipe Out Effect", "Sparkling GIF", "Scanning", "Extra", "IDK", "A"]
-        labelLis = []
-        EffectList = []
+        self.layout = QVBoxLayout()
 
-        for i in  range(self.no_effect):
-            labelLis.append(QLabel("{}".format(labelLisName[i])))
-            EffectList.append(QPushButton(""))
-            formLayout.addRow(EffectList[i], labelLis[i])
+        # Initialize tab screen
+        self.tabs = QTabWidget()
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+        self.tabs.resize(300, 200)
+
+        # Add tabs
+        self.tabs.addTab(self.tab1, "HOT")
+        self.tabs.addTab(self.tab2, "2020")
+        widget = QWidget()
+
+        # Create first tab
+        formLayout1 = QFormLayout(widget)
+        labelLisName1 = ["Wipe Out Effect", "Sparkling GIF", "Scanning", "Extra", "IDK", "A"]
+        labelLis1, EffectList1 = [], []
+
+        for i in range(self.no_effect):
+            labelLis1.append(QLabel("{}".format(labelLisName1[i])))
+            EffectList1.append(QPushButton(""))
+            formLayout1.addRow(EffectList1[i], labelLis1[i])
 
         # for the future code this can be abstracted as putting into a list
-        EffectList[0].clicked.connect(self.effect0_clicked)
-        EffectList[1].clicked.connect(self.effect1_clicked)
-        EffectList[2].clicked.connect(self.effect2_clicked)
-        EffectList[3].clicked.connect(self.effect3_clicked)
-        EffectList[4].clicked.connect(self.effect4_clicked)
+        EffectList1[0].clicked.connect(self.effect0_clicked)
+        EffectList1[1].clicked.connect(self.effect1_clicked)
+        EffectList1[2].clicked.connect(self.effect2_clicked)
+        EffectList1[3].clicked.connect(self.effect3_clicked)
+        EffectList1[4].clicked.connect(self.effect4_clicked)
 
-        groupBox.setLayout(formLayout)
-        scroll = QScrollArea()
-        scroll.setWidget(groupBox)
-        scroll.setWidgetResizable(True)
-        layout = QVBoxLayout(self)
-        layout.addWidget(scroll)
+        scroll1 = QScrollArea()
+        scroll1.setLayout(formLayout1)
+
+        self.tab1.layout = QVBoxLayout(self)
+        self.tab1.layout.addWidget(scroll1)
+        self.tab1.setLayout(self.tab1.layout)
+
+        #Create second tab
+        formLayout2 = QFormLayout(widget)
+        labelLisName2 = ["A", "B", "C", "D", "E", "F"]
+        labelLis2, EffectList2 = [], []
+
+        for i in range(self.no_effect):
+            labelLis2.append(QLabel("{}".format(labelLisName2[i])))
+            EffectList2.append(QPushButton(""))
+            formLayout2.addRow(EffectList2[i], labelLis2[i])
+
+        # for the future code this can be abstracted as putting into a list
+        EffectList2[0].clicked.connect(self.effect0_clicked)
+        EffectList2[1].clicked.connect(self.effect1_clicked)
+        EffectList2[2].clicked.connect(self.effect2_clicked)
+        EffectList2[3].clicked.connect(self.effect3_clicked)
+        EffectList2[4].clicked.connect(self.effect4_clicked)
+
+        scroll2 = QScrollArea()
+        scroll2.setLayout(formLayout2)
+
+        self.tab2.layout = QVBoxLayout(self)
+        self.tab2.layout.addWidget(scroll2)
+        self.tab2.setLayout(self.tab2.layout)
+
+        # Add tabs to widget
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+
         self.show()
 
     #This definition of effect's might be changed through such as while or for statement in the future
