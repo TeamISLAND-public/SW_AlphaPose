@@ -145,7 +145,7 @@ class VideoStreamer(QWidget):
 
     def setPosition(self, position):
         self.time = position
-        # self.cap.set(cv2.CAP_PROP_POS_FRAMES, position)
+        self.timeBox.controlVideo(position)
         self.showFrame()
 
     def change_playButtonStatus(self):
