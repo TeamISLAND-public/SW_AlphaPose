@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QApplication, QHeaderView
+from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction
 from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot
 
 from EffectStatusBar.RangeSlider import QRangeSlider
-import sys
 
 class EffectStatusBar(QTableWidget):
     def __init__(self):

@@ -36,7 +36,7 @@ class VisualizationDemo(object):
             else:
                 break
 
-    def run_on_video(self, video, predictions, effect_type):
+    def run_on_video(self, video, predictions, effect_type, current_frame):
         video_visualizer = VideoVisualizer(self.metadata, self.instance_mode)
 
         def process_predictions(cnt, frame, predictions):
@@ -79,7 +79,8 @@ class VisualizationDemo(object):
         else:
             for cnt, frame in enumerate(frame_gen):
                 # print("non-parallel prediction",cnt)
-                if predictions[cnt]['current_frame'] == cnt:
+                # if predictions[cnt]['current_frame'] == cnt:
+                if current_frame <= cnt and cnt < current_frame+30:
                     yield process_predictions(cnt, frame, predictions[cnt])
 
 

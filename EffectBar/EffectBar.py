@@ -3,8 +3,8 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from Library.detectron2.demo.run_demo import run_demo
 
 class EffectBar(QDialog):
-
     sent_type = pyqtSignal(int, int, int)
+    sent_video = pyqtSignal(list, int)
     no_effect = 5
 
     def __init__(self):
@@ -42,30 +42,32 @@ class EffectBar(QDialog):
     def effect0_clicked(self):
         self.type = 0
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-        print(self.video_name)
-        self.demo = run_demo(self.video_name, self.type)
-        # print(self.current_frame)
-        # test()
+        demo = run_demo(self.video_name, self.type, self.current_frame).run()
+        self.sent_video.emit(demo, self.current_frame)
 
     def effect1_clicked(self):
         self.type = 1
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-        self.demo = run_demo(self.video_name, self.type)
+        demo = run_demo(self.video_name, self.type, self.current_frame).run()
+        self.sent_video.emit(demo, self.current_frame)
 
     def effect2_clicked(self):
         self.type = 2
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-        self.demo = run_demo(self.video_name, self.type)
+        demo = run_demo(self.video_name, self.type, self.current_frame).run()
+        self.sent_video.emit(demo, self.current_frame)
 
     def effect3_clicked(self):
         self.type = 3
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-        self.demo = run_demo(self.video_name, self.type)
+        demo = run_demo(self.video_name, self.type, self.current_frame).run()
+        self.sent_video.emit(demo, self.current_frame)
 
     def effect4_clicked(self):
         self.type = 4
         self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-        self.demo = run_demo(self.video_name, self.type)
+        demo = run_demo(self.video_name, self.type, self.current_frame).run()
+        self.sent_video.emit(demo, self.current_frame)
 
     def playbar_to_effectbar(self, class_object):
         class_object.sent_current_frame.connect(self.PlayBar_Inter_EffectBar)
