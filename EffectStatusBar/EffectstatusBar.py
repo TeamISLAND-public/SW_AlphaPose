@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QHeaderView
+from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QPushButton
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSlot
 
@@ -11,6 +11,7 @@ class EffectStatusBar(QTableWidget):
 
     def init_ui(self):
         super().__init__()
+        self.action_name = "Off Track"
         self.setRowCount(0)
         self.setColumnCount(2)  #Setting this value because of effect_type and QRangeSlider
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -23,8 +24,8 @@ class EffectStatusBar(QTableWidget):
     # popup link information
     def cell_right_clicked(self):
         self.setContextMenuPolicy(Qt.ActionsContextMenu)
-        delete_action = QAction("Delete Effect", self)
-        test_action = QAction("Test Action", self)
+        delete_action = QAction("Track Delete", self)
+        test_action = QAction("{}".format(self.action_name), self)
         self.addAction(delete_action)
         self.addAction(test_action)
         delete_action.triggered.connect(self.delete_effect_queue_list)
@@ -43,9 +44,8 @@ class EffectStatusBar(QTableWidget):
     def EffectBar_Inter_EffectStatusBar(self, type, current_frame, total_frame):
         currentRowCount = self.rowCount()
         self.insertRow(currentRowCount)
-        self.setItem(currentRowCount, 0, QTableWidgetItem("{}{}{}".format(type,current_frame,total_frame)))   # Inserting item and cellwidget
-        # QRangeSlider = self.QRangeSlider().setMax(total_frame)
-        # print(current_frame, total_frame)
+        # Inserting item and cellwidget
+        self.setItem(currentRowCount, 0, QTableWidgetItem("{}{}{}".format(type,current_frame,total_frame)))
+        self.setCellWidget(currentRowCount, 0, QPushButton())
         self.setCellWidget(currentRowCount, 1, QRangeSlider(None, current_frame, total_frame))
         self.horizontalHeader().setStretchLastSection(True)
-        # self.horizontalHeader().setSectionResizeMode(2, QHeaderView.resizeContentsPrecision())
