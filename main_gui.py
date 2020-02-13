@@ -8,7 +8,6 @@ from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
-from Library.detectron2.demo.open_demo import open_demo
 
 
 class MyApp(QMainWindow):

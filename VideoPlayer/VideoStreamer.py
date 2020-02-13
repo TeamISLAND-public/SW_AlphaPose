@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, 
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
 
-
 from VideoPlayer.Playbar import PlayBar
 from VideoSave.VideoSave import VideoSave
+
 
 class VideoStreamer(QWidget):
 
@@ -30,7 +30,7 @@ class VideoStreamer(QWidget):
         self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
-        self.timeBox.changeRange(0, 0)
+        self.timeBox.changeRange(0, 0, 0)
         self.volumeSlider.setRange(0, 0)
 
         self.video.setMouseTracking(False)
@@ -61,7 +61,10 @@ class VideoStreamer(QWidget):
             self.play()
             return
 
-        self.video.setPixmap(frame)
+        img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
+        pix = QPixmap.fromImage(img)
+        resized_pix = pix.scaled(640, 480)
+        self.video.setPixmap(resized_pix)
 
     def nextFrameSlot(self):
         self.showFrame()
@@ -70,7 +73,7 @@ class VideoStreamer(QWidget):
 
     def setTime(self):
         self.time += 1
-        self.timeBox.controlVideo(self.time, self.fps)
+        self.timeBox.controlVideo(self.time)
 
     def start(self):
         self.timer.setInterval(1000 / self.fps)
@@ -117,10 +120,7 @@ class VideoStreamer(QWidget):
             if not ret:
                 break
 
-            img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
-            pix = QPixmap.fromImage(img)
-            resized_pix = pix.scaled(640, 480)
-            self.list.append((ret, resized_pix))
+            self.list.append((ret, frame))
 
             count += 1
             progress.setValue(count)
@@ -141,11 +141,11 @@ class VideoStreamer(QWidget):
         self.timeBox.slider.sliderMoved.connect(self.setPosition)
 
     def videoDuration(self, duration):
-        self.timeBox.changeRange(0, duration)
+        self.timeBox.changeRange(0, duration, self.fps)
 
     def setPosition(self, position):
         self.time = position
-        # self.cap.set(cv2.CAP_PROP_POS_FRAMES, position)
+        self.timeBox.controlVideo(position)
         self.showFrame()
 
     def change_playButtonStatus(self):
@@ -168,7 +168,7 @@ class VideoStreamer(QWidget):
             self.timer.stop()
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
-        videoSave = VideoSave(self.name)
+        videoSave = VideoSave(self.name, self.list, self.fps, self.cap.get(4), self.cap.get(3))
         videoSave.show()
         videoSave.saveVideo()
 
@@ -179,9 +179,9 @@ class VideoStreamer(QWidget):
             errorbox.warning(self, "Error Message", "There is no video", QMessageBox.Ok)
             return
 
-        # coordinate of videos's left top position is (44, 9)
-        x = pos.x() - 44
-        y = pos.y() - 9
+        x = pos.x() - self.video.pos().x()
+        y = pos.y() - self.video.pos().y()
+        print(x, y)
         if not (0 <= x <= 640 and 0 <= y <= 480):
             errorbox = QMessageBox()
             errorbox.warning(self, "Error Message", "Out of boundary!", QMessageBox.Ok)
