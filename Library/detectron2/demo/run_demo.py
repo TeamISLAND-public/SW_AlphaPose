@@ -81,10 +81,7 @@ class run_demo:
                 prediction_result = torch.load('{}.pt'.format(output_fname))
                 for vis_frame in tqdm.tqdm(self.visualizer.run_on_video(video, prediction_result, self.effect_type, self.current_frame),
                                            total=num_frames):
-                    img = QImage(vis_frame, vis_frame.shape[1], vis_frame.shape[0], QImage.Format_BGR888)
-                    pix = QPixmap.fromImage(img)
-                    resized_pix = pix.scaled(640, 480)
-                    self.list.append((True, resized_pix))
+                    self.list.append((True, vis_frame))
                 return self.list
 
             except IOError:
