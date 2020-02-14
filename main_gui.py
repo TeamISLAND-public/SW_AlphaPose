@@ -23,6 +23,7 @@ class MyApp(QMainWindow):
         self.effectStatusBar = EffectStatusBar()
         self.effectStatusBar.effectbar_to_effectstatusbar(self.effectBar)       #effectstatusbar is getting information about effects
         self.effectBar.playbar_to_effectbar(self.videoPlayer.timeBox)           #effectbar is getting value of current frame
+        self.effectBar.videobar_to_effectbar(self.videoPlayer)                     #effectbar is getting value of click position
         self.videoPlayer.effectbar_to_videostreamer(self.effectBar)             #videoplayer is getting result video
         self.effectBar.main_to_effectbar(self)
         self.initUI()

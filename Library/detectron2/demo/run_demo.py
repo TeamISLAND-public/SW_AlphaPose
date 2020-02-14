@@ -4,15 +4,13 @@ import multiprocessing as mp
 import os
 import cv2
 import torch
-import tqdm
+import numpy as np
+
+from PyQt5.QtWidgets import QMessageBox
 
 # config get_cfg, import read_image, import setup_logger is the one that import the file
 from detectron2.config import get_cfg
 from detectron2.utils.pre_visualizer import VisualizationDemo
-from PyQt5.QtGui import QImage, QPixmap
-
-# constants
-WINDOW_NAME = "COCO detections"
 
 def setup_cfg(args):
     # load config from file and command-line arguments
@@ -59,35 +57,44 @@ def get_parser(video_input):
     return parser
 
 class run_demo:
-    def __init__(self, video_input, effect_type, current_frame):
+    def __init__(self, video_input, effect_type, current_frame, clicked_positions):
         mp.set_start_method("spawn", force=True)
         self.args = get_parser(video_input).parse_args()
         cfg = setup_cfg(self.args)
 
+        self.clicked_positions = clicked_positions
         self.effect_type = effect_type
         self.current_frame = current_frame
-        self.list = []
+        self.result_list = []
+        self.truth_list = []
         self.visualizer = VisualizationDemo(cfg)
 
     def run(self):
         args = self.args
+        if not self.clicked_positions:
+            print("no position selected")
+            return
+        else:
+            self.clicked_positions = np.array(self.clicked_positions)
+
         if args.video_input:
             video = cv2.VideoCapture(args.video_input)
-            num_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
             output_fname = os.path.splitext(args.video_input)[0]
-
-            try:
-                # pt file is called Panther, a visual programming toolkit
+            if os.path.isfile('{}.pt'.format(output_fname)):
                 prediction_result = torch.load('{}.pt'.format(output_fname))
-                for vis_frame in tqdm.tqdm(self.visualizer.run_on_video(video, prediction_result, self.effect_type, self.current_frame),
-                                           total=num_frames):
-                    self.list.append((True, vis_frame))
-                return self.list
+                for i in range(prediction_result[self.current_frame]["num_instances"]):
+                    self.truth_list.clear()
+                    for position in self.clicked_positions:
+                        self.truth_list.append(prediction_result[self.current_frame]["masks"][i][position[1]][position[0]])
+                    print(self.truth_list)
+                    if not any(self.truth_list):
+                        for a in range(40):
+                            prediction_result[self.current_frame+a-10]["masks"][i] = False
+                for vis_frame in self.visualizer.run_on_video(video, prediction_result, self.effect_type, self.current_frame):
+                    self.result_list.append((True, vis_frame))
+                return self.result_list
 
-            except IOError:
-                print("There is no compatible .pt file")
+            else:
+                print("There is some error include .pt")
         else:
             ("video_input is not correct")
-
-if __name__ == "__main__":
-    run_demo("C:/Users/daniel/PycharmProjects/Project1/test3.mp4")

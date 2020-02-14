@@ -3,7 +3,7 @@ import cv2
 # from ffpyplayer.player import MediaPlayer
 # from imutils.video import FileVideoStream
 from PyQt5.QtWidgets import QStyle, QPushButton, QSlider,  QLabel, QHBoxLayout, QWidget, QApplication, QGridLayout, QMessageBox, QProgressBar, QMainWindow
-from PyQt5.QtCore import Qt, QTimer, pyqtSlot
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot, pyqtSignal
 from PyQt5.QtGui import QImage, QPixmap
 
 from VideoPlayer.Playbar import PlayBar
@@ -11,6 +11,8 @@ from VideoSave.VideoSave import VideoSave
 
 
 class VideoStreamer(QWidget):
+
+    sent_position = pyqtSignal(list)
 
     def __init__(self):
         super().__init__()
@@ -23,6 +25,7 @@ class VideoStreamer(QWidget):
         self.video = QLabel()
         self.timer = QTimer()
         self.list = []
+        self.position_list = []
 
         self.initUI()
 
@@ -194,6 +197,11 @@ class VideoStreamer(QWidget):
         real_x = int(x / 640 * weight)
         real_y = int(y / 480 * height)
 
+        position = (real_x, real_y)
+
+        self.position_list.append(position)
+        self.sent_position.emit(self.position_list)
+
         print(real_x, real_y)
 
     def effectbar_to_videostreamer(self, class_object):
@@ -211,6 +219,8 @@ class VideoStreamer(QWidget):
         if not self.ret:
             self.play()
             return
+
+        self.position_list.clear()
 
         # self.video.setPixmap(frame)
 
