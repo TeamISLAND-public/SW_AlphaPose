@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from Library.detectron2.demo.run_demo import run_demo
 
 class EffectBar(QDialog):
-    sent_type = pyqtSignal(int, int, int)
+    sent_type = pyqtSignal(str, int, int)
     sent_video = pyqtSignal(list, int)
     no_effect = 3
 
@@ -12,7 +12,6 @@ class EffectBar(QDialog):
         self.init_ui()
 
     def init_ui(self):
-
         self.clicked_positions = []
         self.demo = []
         self.video_name = []
@@ -32,20 +31,18 @@ class EffectBar(QDialog):
 
         # Create first tab
         formLayout1 = QFormLayout(widget)
-        labelLisName1 = ["Wipe Out Effect", "Sparkling GIF", "Scanning", "Extra", "IDK", "A"]
+        self.labelLisName1 = ["Wipe Out Effect", "Sparkling GIF", "Scanning", "Extra", "IDK", "A"]
         labelLis1, EffectList1 = [], []
 
         for i in range(self.no_effect):
-            labelLis1.append(QLabel("{}".format(labelLisName1[i])))
+            labelLis1.append(QLabel("{}".format(self.labelLisName1[i])))
             EffectList1.append(QPushButton(""))
             formLayout1.addRow(EffectList1[i], labelLis1[i])
 
         # for the future code this can be abstracted as putting into a list
-        EffectList1[0].clicked.connect(self.effect0_clicked)
-        EffectList1[1].clicked.connect(self.effect1_clicked)
-        EffectList1[2].clicked.connect(self.effect2_clicked)
-        # EffectList1[3].clicked.connect(self.effect3_clicked)
-        # EffectList1[4].clicked.connect(self.effect4_clicked)
+        EffectList1[0].clicked.connect(lambda: self.effect_clicked(0))
+        EffectList1[1].clicked.connect(lambda: self.effect_clicked(1))
+        EffectList1[2].clicked.connect(lambda: self.effect_clicked(2))
 
         scroll1 = QScrollArea()
         scroll1.setLayout(formLayout1)
@@ -65,11 +62,10 @@ class EffectBar(QDialog):
             formLayout2.addRow(EffectList2[i], labelLis2[i])
 
         # for the future code this can be abstracted as putting into a list
-        EffectList2[0].clicked.connect(self.effect0_clicked)
-        EffectList2[1].clicked.connect(self.effect1_clicked)
-        EffectList2[2].clicked.connect(self.effect2_clicked)
-        # EffectList2[3].clicked.connect(self.effect3_clicked)
-        # EffectList2[4].clicked.connect(self.effect4_clicked)
+        EffectList2[0].clicked.connect(lambda: self.effect_clicked(0))
+        EffectList2[1].clicked.connect(lambda: self.effect_clicked(1))
+        EffectList2[2].clicked.connect(lambda: self.effect_clicked(2))
+
 
         scroll2 = QScrollArea()
         scroll2.setLayout(formLayout2)
@@ -85,8 +81,8 @@ class EffectBar(QDialog):
         self.show()
 
     #This definition of effect's might be changed through such as while or for statement in the future
-    def effect0_clicked(self):
-        self.type = 0
+    def effect_clicked(self, index):
+        self.type = index
         if not self.video_name:
             print("no Video_name")
             return
@@ -95,49 +91,11 @@ class EffectBar(QDialog):
 
         if not self.demo:
             print("no Demo")
+            self.clicked_positions.clear()
             return
         else:
-            self.sent_type.emit(self.type, self.current_frame, self.total_frame)
+            self.sent_type.emit(self.labelLisName1[self.type], self.current_frame, self.total_frame)
             self.sent_video.emit(self.demo, self.current_frame)
-
-
-    def effect1_clicked(self):
-        self.type = 1
-        if not self.video_name:
-            print("no Video_name")
-            return
-        else:
-            self.demo = run_demo(self.video_name, self.type, self.current_frame, self.clicked_positions).run()
-        if not self.demo:
-            return
-        else:
-            self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-            self.sent_video.emit(self.demo, self.current_frame)
-
-    def effect2_clicked(self):
-        self.type = 2
-        if not self.video_name:
-            print("no Video_name")
-            return
-        else:
-            self.demo = run_demo(self.video_name, self.type, self.current_frame, self.clicked_positions).run()
-        if not self.demo:
-            print("no Demo")
-        else:
-            self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-            self.sent_video.emit(self.demo, self.current_frame)
-
-    # def effect3_clicked(self):
-    #     self.type = 3
-    #     self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-    #     demo = run_demo(self.video_name, self.type, self.current_frame).run()
-    #     self.sent_video.emit(demo, self.current_frame)
-    #
-    # def effect4_clicked(self):
-    #     self.type = 4
-    #     self.sent_type.emit(self.type, self.current_frame, self.total_frame)
-    #     demo = run_demo(self.video_name, self.type, self.current_frame).run()
-    #     self.sent_video.emit(demo, self.current_frame)
 
     def playbar_to_effectbar(self, class_object):
         class_object.sent_current_frame.connect(self.PlayBar_Inter_EffectBar)

@@ -184,7 +184,6 @@ class VideoStreamer(QWidget):
 
         x = pos.x() - self.video.pos().x()
         y = pos.y() - self.video.pos().y()
-        print(x, y)
         if not (0 <= x <= 640 and 0 <= y <= 480):
             errorbox = QMessageBox()
             errorbox.warning(self, "Error Message", "Out of boundary!", QMessageBox.Ok)
@@ -202,10 +201,12 @@ class VideoStreamer(QWidget):
         self.position_list.append(position)
         self.sent_position.emit(self.position_list)
 
-        print(real_x, real_y)
-
     def effectbar_to_videostreamer(self, class_object):
         class_object.sent_video.connect(self.EffectBar_Inter_VideoStreamer)
+
+    def effectstatusbar_to_videostreamer(self, class_object):
+        class_object.sent_fix.connect(self.EffectStatusBar_Inter_VideoStreamer)
+
 
     # Sending result of video visualization
     @pyqtSlot(list, int)
@@ -222,8 +223,10 @@ class VideoStreamer(QWidget):
 
         self.position_list.clear()
 
-        # self.video.setPixmap(frame)
-
+    #RangeSilder value update is expected
+    @pyqtSlot(bool, int, bool)
+    def EffectStatusBar_Inter_VideoStreamer(self, deletion, current_row, on_off):
+        print(deletion, current_row, on_off)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

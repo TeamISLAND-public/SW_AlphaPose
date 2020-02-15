@@ -8,6 +8,7 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 __all__ = ['QRangeSlider']
+currentRowCount = None
 total_frame = None
 current_frame = None
 
@@ -233,7 +234,7 @@ class QRangeSlider(QWidget, Ui_Form):
     _SPLIT_START = 1
     _SPLIT_END = 2
 
-    def __init__(self, parent=None, current_frame=current_frame, total_frame=total_frame):
+    def __init__(self, parent=None, currentRowCount=currentRowCount, current_frame=current_frame, total_frame=total_frame):
         """Create a new QRangeSlider instance.
             :param parent: QWidget parent
             :return: New QRangeSlider instance.

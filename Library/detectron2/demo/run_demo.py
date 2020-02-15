@@ -67,6 +67,7 @@ class run_demo:
         self.current_frame = current_frame
         self.result_list = []
         self.truth_list = []
+        self.summarized_truth_list = []
         self.visualizer = VisualizationDemo(cfg)
 
     def run(self):
@@ -75,7 +76,7 @@ class run_demo:
             print("no position selected")
             return
         else:
-            self.clicked_positions = np.array(self.clicked_positions)
+            self.np_clicked_positions = np.array(self.clicked_positions)
 
         if args.video_input:
             video = cv2.VideoCapture(args.video_input)
@@ -83,18 +84,29 @@ class run_demo:
             if os.path.isfile('{}.pt'.format(output_fname)):
                 prediction_result = torch.load('{}.pt'.format(output_fname))
                 for i in range(prediction_result[self.current_frame]["num_instances"]):
+                    print(i)
                     self.truth_list.clear()
-                    for position in self.clicked_positions:
+                    for position in self.np_clicked_positions:
                         self.truth_list.append(prediction_result[self.current_frame]["masks"][i][position[1]][position[0]])
                     print(self.truth_list)
                     if not any(self.truth_list):
                         for a in range(40):
                             prediction_result[self.current_frame+a-10]["masks"][i] = False
-                for vis_frame in self.visualizer.run_on_video(video, prediction_result, self.effect_type, self.current_frame):
-                    self.result_list.append((True, vis_frame))
-                return self.result_list
-
+                    self.summarized_truth_list.append(any(self.truth_list))
+                print(self.summarized_truth_list)
+                if not any(self.summarized_truth_list):
+                    print("selected part is not compatible with prediction")
+                    self.summarized_truth_list.clear()
+                    # due to return nothing in this progress self.clicked_position is not initialized
+                    return
+                else:
+                    for vis_frame in self.visualizer.run_on_video(video, prediction_result, self.effect_type,
+                                                                  self.current_frame):
+                        self.result_list.append((True, vis_frame))
+                    return self.result_list
             else:
                 print("There is some error include .pt")
+                return
         else:
-            ("video_input is not correct")
+            print("video_input is not correct")
+            return
