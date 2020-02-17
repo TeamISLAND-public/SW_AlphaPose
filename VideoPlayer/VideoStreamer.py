@@ -24,9 +24,11 @@ class VideoStreamer(QWidget):
         self.volumeText = QLabel("0.0%")
         self.video = QLabel()
         self.timer = QTimer()
-        self.list = []
-        self.position_list = []
-
+        self.list = []                      #initial list
+        self.position_list = []             #storing clicked information list
+        self.storage_list = []
+        self.use_storage_list = []
+        self.duplicating_list = []
         self.initUI()
 
     def initUI(self):
@@ -53,10 +55,17 @@ class VideoStreamer(QWidget):
         self.show()
 
     def showFrame(self):
-        if self.time < len(self.list):
-            self.ret, frame = self.list[self.time]
+        if self.duplicating_list == []:
+            if self.time < len(self.list):
+                self.ret, frame = self.list[self.time]
+            else:
+                self.ret = None
+        #     # audio_frame, val = self.audio.get_frame()
         else:
-            self.ret = None
+            if self.time < len(self.duplicating_list):
+                self.ret, frame = self.duplicating_list[self.time]
+            else:
+                self.ret = None
         # audio_frame, val = self.audio.get_frame()
 
         # if video finishes
@@ -201,32 +210,45 @@ class VideoStreamer(QWidget):
         self.position_list.append(position)
         self.sent_position.emit(self.position_list)
 
+    def appending_videolist(self, list, use_storage_list):
+        self.duplicating_list = list.copy()
+        for i in range(len(use_storage_list)):
+            current_frame = use_storage_list[i][1]
+            i = 0
+            for j in use_storage_list[i][0]:
+                self.duplicating_list[current_frame+i] = j
+                i += 1
+
     def effectbar_to_videostreamer(self, class_object):
         class_object.sent_video.connect(self.EffectBar_Inter_VideoStreamer)
 
     def effectstatusbar_to_videostreamer(self, class_object):
         class_object.sent_fix.connect(self.EffectStatusBar_Inter_VideoStreamer)
 
-
     # Sending result of video visualization
     @pyqtSlot(list, int)
     def EffectBar_Inter_VideoStreamer(self, result_list, current_frame):
-        if self.time < len(self.list):
-            for i in range(29):
-                self.list[current_frame+i] = result_list[i]
-        else:
-            self.ret = None
-        # if video finishes
-        if not self.ret:
-            self.play()
-            return
-
+        self.storage_list.append((result_list, current_frame))
+        self.use_storage_list = self.storage_list.copy()
+        self.appending_videolist(self.list, self.use_storage_list)
         self.position_list.clear()
 
     #RangeSilder value update is expected
-    @pyqtSlot(bool, int, bool)
+    @pyqtSlot(bool, int, list)
     def EffectStatusBar_Inter_VideoStreamer(self, deletion, current_row, on_off):
-        print(deletion, current_row, on_off)
+        if deletion == True:
+            del self.storage_list[current_row]
+            self.use_storage_list = self.storage_list.copy()
+            print("deletion")
+        else:
+            print("non-deletion")
+            self.use_storage_list = self.storage_list.copy()
+            for i in reversed(range(len(on_off))):
+                if on_off[i] == False:
+                    del self.use_storage_list[i]
+        self.appending_videolist(self.list, self.use_storage_list)
+
+        # print(len(self.storage_list), len(self.use_storage_list), deletion, current_row, on_off)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

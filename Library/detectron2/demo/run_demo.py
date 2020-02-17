@@ -91,7 +91,7 @@ class run_demo:
                     print(self.truth_list)
                     if not any(self.truth_list):
                         for a in range(40):
-                            prediction_result[self.current_frame+a-10]["masks"][i] = False
+                            prediction_result[self.current_frame+a]["masks"][i] = False
                     self.summarized_truth_list.append(any(self.truth_list))
                 print(self.summarized_truth_list)
                 if not any(self.summarized_truth_list):

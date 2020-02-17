@@ -96,6 +96,7 @@ class EffectBar(QDialog):
         else:
             self.sent_type.emit(self.labelLisName1[self.type], self.current_frame, self.total_frame)
             self.sent_video.emit(self.demo, self.current_frame)
+            self.clicked_positions.clear()
 
     def playbar_to_effectbar(self, class_object):
         class_object.sent_current_frame.connect(self.PlayBar_Inter_EffectBar)

@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QPushButton, QStyle
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QAbstractItemView, QAction, QPushButton
+from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal
+from PyQt5.QtGui import QColor
 from EffectStatusBar.RangeSlider import QRangeSlider
 
+
 class EffectStatusBar(QTableWidget):
-    sent_fix = pyqtSignal(bool, int, bool)
+    sent_fix = pyqtSignal(bool, int, list)
     def __init__(self):
         super(EffectStatusBar, self).__init__()
         self.init_ui()
@@ -12,17 +13,21 @@ class EffectStatusBar(QTableWidget):
     def init_ui(self):
         super().__init__()
 
-        self.action_name = "Off Track"
-        self.cell_right_clicked()
-
         self.setRowCount(0)
         self.setColumnCount(3)  #Setting this value because of effect_type and QRangeSlider
-
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.setShowGrid(True)
         self.verticalHeader().hide()
         self.horizontalHeader().hide()
+
+        self.action_name = "Off Track"
+        self.cell_right_clicked()
+
+        self.stateList = []
+        self.cellClicked.connect(self.test)
+
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
         self.show()
 
     # popup link information
@@ -37,7 +42,8 @@ class EffectStatusBar(QTableWidget):
     #deleting effect list in the effectstatusbar
     def delete_effect_queue_list(self):
         for i in self.selectedItems():
-            self.sent_fix.emit(True, i.row(), False)
+            self.sent_fix.emit(True, i.row(), [False])
+            del self.stateList[i.row()]
             self.removeRow(i.row())
 
     # This line is for EffectBar to EffectStatusBar connection
@@ -49,25 +55,24 @@ class EffectStatusBar(QTableWidget):
     def EffectBar_Inter_EffectStatusBar(self, type, current_frame, total_frame):
         currentRowCount = self.rowCount()
         self.insertRow(currentRowCount)
+        self.stateList.append(True)
         # Inserting item and cellwidget
-
         self.setItem(currentRowCount, 0, QTableWidgetItem("{}".format(type)))
-        self.setCellWidget(currentRowCount, 1, Toggle_Button(currentRowCount))
+        self.setItem(currentRowCount, 1, QTableWidgetItem())
+        self.item(currentRowCount, 1).setBackground(QColor(34,139,34))
         self.setCellWidget(currentRowCount, 2, QRangeSlider(None, currentRowCount, current_frame, total_frame))
         self.horizontalHeader().setStretchLastSection(True)
 
-class Toggle_Button(QPushButton):
-    def __init__(self, currentRowCount):
-        QPushButton.__init__(self, "ON")
-        # self.setFixedSize(100, 100)
-        self.currentRowCount = currentRowCount
-        self.setStyleSheet("background-color: green")
-        self.setCheckable(True)
-        self.toggled.connect(self.slot_toggle)
-
-    # when toggled connect initial state is True in order to make first click as OFF then True state must be red and OFF
-    @pyqtSlot(bool)
-    def slot_toggle(self, state):
-        print(self.currentRowCount, state)
-        self.setStyleSheet("background-color: %s" % ({True: "red", False: "green"}[state]))
-        self.setText({True: "OFF", False: "ON"}[state])
+    @pyqtSlot(int, int)
+    def test(self, row, col):
+        if col == 1:
+            if self.stateList[row] == True:
+                self.stateList[row] = False
+                self.item(row, col).setBackground(QColor(139,0,0))
+                # self.item(self.rowCount(), 1).setBackground(QColor(155,0,0))
+            else:
+                self.stateList[row] = True
+                self.item(row, col).setBackground(QColor(34,139,34))
+                # self.item(self.rowCount(), 1).setBackground(QColor(0,0,0))
+            self.sent_fix.emit(False, row, self.stateList)
+        return
