@@ -8,6 +8,7 @@ from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
+from Memory.Action import stack
 
 
 class MyApp(QMainWindow):
@@ -122,6 +123,18 @@ class MyApp(QMainWindow):
         menu_file.addMenu(video_new)
         menu_file.addAction(file_save)
         menu_file.addAction(file_exit)
+
+        undo = QAction("Undo", self)
+        undo.setShortcut("Ctrl+Z")
+        undo.setStatusTip("Undo last action")
+        undo.triggered.connect(stack.undo)
+
+        redo = QAction("Redo", self)
+        redo.setStatusTip("Cancel undo action")
+        redo.triggered.connect(stack.redo)
+
+        menu_edit.addAction(undo)
+        menu_edit.addAction(redo)
 
 
 if __name__ == '__main__':
