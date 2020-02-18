@@ -1,10 +1,9 @@
-from PyQt5.QtWidgets import QUndoStack, QUndoCommand
+import sys
+from PyQt5.QtWidgets import QUndoStack, QUndoCommand, QUndoView, QApplication, QDialog, QGridLayout
 
 from EffectBar.EffectBar import EffectBar
 import EffectStatusBar.EffectstatusBar
 import EffectStatusBar.RangeSlider
-
-stack = QUndoStack()
 
 
 # maybe be called in EffectBar
@@ -63,6 +62,8 @@ class TrackActionCommand(QUndoCommand):
         self.change = change
         self.slider = slider
 
+        self.setText("Change the range")
+
     def undo(self):
         if self.change > self.old_finish:
             self.slider._setEnd(self.old_finish)
@@ -74,3 +75,26 @@ class TrackActionCommand(QUndoCommand):
             self.slider._setEnd(self.change)
         else:
             self.slider._setStart(self.change)
+
+
+class UndoList(QDialog):
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Command List")
+        self.stack = QUndoStack()
+
+        view = QUndoView()
+        view.setStack(self.stack)
+
+        layout = QGridLayout()
+        layout.addWidget(view)
+
+        self.setLayout(layout)
+        # self.show()
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ex = UndoList()
+    sys.exit(app.exec_())

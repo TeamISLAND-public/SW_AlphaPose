@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QGridLayout, QSplitter, QGroupBox, QHBoxLayout, QWidget
 from PyQt5.QtGui import QPainter, QColor, QFont
 
-from Memory.Action import stack, TrackActionCommand
+from Memory.Action import UndoList, TrackActionCommand
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -407,7 +407,7 @@ class QRangeSlider(QWidget, Ui_Form):
             w = xpos + offset
             last = self.start()
             self._setStart(v)
-            stack.push(TrackActionCommand(last, self.end(), self.start(), self))
+            UndoList().stack.push(TrackActionCommand(last, self.end(), self.start(), self))
 
         elif index == self._SPLIT_END:
             _lockWidth(self._head)
@@ -418,7 +418,7 @@ class QRangeSlider(QWidget, Ui_Form):
             w = self.width() - xpos + offset
             last = self.end()
             self._setEnd(v)
-            stack.push(TrackActionCommand(last, self.end(), self.start(), self))
+            UndoList().stack.push(TrackActionCommand(last, self.end(), self.start(), self))
 
         _unlockWidth(self._tail)
         _unlockWidth(self._head)

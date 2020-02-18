@@ -8,7 +8,7 @@ from VideoPlayer.VideoStreamer import VideoStreamer
 from Recorder.RecordApp import RecordApp
 from EffectBar.EffectBar import EffectBar
 from EffectStatusBar.EffectstatusBar import EffectStatusBar
-from Memory.Action import stack
+from Memory.Action import UndoList
 
 
 class MyApp(QMainWindow):
@@ -18,6 +18,7 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.commandList = UndoList()
         self.videoPlayer = VideoStreamer()
         self.videoTable = VideoList(self.videoPlayer)
         self.effectBar = EffectBar()
@@ -96,26 +97,26 @@ class MyApp(QMainWindow):
         menu_file = menu.addMenu("&File")
         menu_edit = menu.addMenu("&Edit")
 
-        video_open = QAction("Open", self)
+        video_open = QAction("&Open", self)
         video_open.setShortcut("Ctrl+O")
         video_open.setStatusTip("Open the video file")
         video_open.triggered.connect(self.open_video)
 
-        webCam_open = QAction("Record", self)
+        webCam_open = QAction("&Record", self)
         webCam_open.setShortcut("Ctrl+R")
         webCam_open.setStatusTip("Record with webcam")
         webCam_open.triggered.connect(self.record_video)
 
-        video_new = QMenu("New", self)
+        video_new = QMenu("&New", self)
         video_new.addAction(video_open)
         video_new.addAction(webCam_open)
 
-        file_exit = QAction("Exit", self)
+        file_exit = QAction("E&xit", self)
         file_exit.setShortcut("Ctrl+Q")
         file_exit.setStatusTip("Exit")
         file_exit.triggered.connect(QCoreApplication.instance().quit)
 
-        file_save = QAction("Save", self)
+        file_save = QAction("&Save", self)
         file_save.setShortcut("Ctrl+S")
         file_save.setStatusTip("Save the video file")
         file_save.triggered.connect(self.videoPlayer.save_video)
@@ -124,15 +125,20 @@ class MyApp(QMainWindow):
         menu_file.addAction(file_save)
         menu_file.addAction(file_exit)
 
-        undo = QAction("Undo", self)
+        undoList = QAction("Undo &List", self)
+        undoList.setStatusTip("Show undo list")
+        undoList.triggered.connect(self.commandList.show)
+
+        undo = QAction("&Undo", self)
         undo.setShortcut("Ctrl+Z")
         undo.setStatusTip("Undo last action")
-        undo.triggered.connect(stack.undo)
+        undo.triggered.connect(UndoList().stack.undo)
 
-        redo = QAction("Redo", self)
+        redo = QAction("&Redo", self)
         redo.setStatusTip("Cancel undo action")
-        redo.triggered.connect(stack.redo)
+        redo.triggered.connect(UndoList().stack.redo)
 
+        menu_edit.addAction(undoList)
         menu_edit.addAction(undo)
         menu_edit.addAction(redo)
 
