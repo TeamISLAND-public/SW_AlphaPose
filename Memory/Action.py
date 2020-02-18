@@ -56,20 +56,21 @@ class EffectActionCommand(QUndoCommand):
 # maybe be called in QRangeSlider
 class TrackActionCommand(QUndoCommand):
 
-    def __init__(self, start, finish, change):
+    def __init__(self, start, finish, change, slider):
         super().__init__()
         self.old_start = start
         self.old_finish = finish
         self.change = change
+        self.slider = slider
 
     def undo(self):
         if self.change > self.old_finish:
-            EffectStatusBar.RangeSlider.QRangeSlider._setEnd(self.old_finish)
+            self.slider._setEnd(self.old_finish)
         else:
-            EffectStatusBar.RangeSlider.QRangeSlider._setStart(self.old_start)
+            self.slider._setStart(self.old_start)
 
     def redo(self):
         if self.change > self.old_finish:
-            EffectStatusBar.RangeSlider.QRangeSlider._setEnd(self.change)
+            self.slider._setEnd(self.change)
         else:
-            EffectStatusBar.RangeSlider.QRangeSlider._setStart(self.change)
+            self.slider._setStart(self.change)
