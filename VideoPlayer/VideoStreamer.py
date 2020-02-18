@@ -29,6 +29,7 @@ class VideoStreamer(QWidget):
         self.storage_list = []
         self.use_storage_list = []
         self.duplicating_list = []
+        self.on_off = []
         self.initUI()
 
     def initUI(self):
@@ -214,10 +215,10 @@ class VideoStreamer(QWidget):
         self.duplicating_list = list.copy()
         for i in range(len(use_storage_list)):
             current_frame = use_storage_list[i][1]
-            i = 0
-            for j in use_storage_list[i][0]:
-                self.duplicating_list[current_frame+i] = j
-                i += 1
+            k = 0
+            for video_frame in use_storage_list[i][0]:
+                self.duplicating_list[current_frame+k] = video_frame
+                k += 1
 
     def effectbar_to_videostreamer(self, class_object):
         class_object.sent_video.connect(self.EffectBar_Inter_VideoStreamer)
@@ -229,25 +230,31 @@ class VideoStreamer(QWidget):
     @pyqtSlot(list, int)
     def EffectBar_Inter_VideoStreamer(self, result_list, current_frame):
         self.storage_list.append((result_list, current_frame))
-        self.use_storage_list = self.storage_list.copy()
+        self.sort_storage(self.storage_list, self.on_off)
         self.appending_videolist(self.list, self.use_storage_list)
         self.position_list.clear()
 
     #RangeSilder value update is expected
     @pyqtSlot(bool, int, list)
     def EffectStatusBar_Inter_VideoStreamer(self, deletion, current_row, on_off):
+        self.on_off = on_off
+        print(deletion,current_row,on_off)
         if deletion == True:
             del self.storage_list[current_row]
-            self.use_storage_list = self.storage_list.copy()
-            print("deletion")
+            self.sort_storage(self.storage_list, self.on_off)
+
         else:
-            print("non-deletion")
-            self.use_storage_list = self.storage_list.copy()
+            self.sort_storage(self.storage_list, self.on_off)
+        self.appending_videolist(self.list, self.use_storage_list)
+
+    def sort_storage(self, storage_list, on_off):
+        self.use_storage_list = storage_list.copy()
+        if on_off == []:
+            return
+        else:
             for i in reversed(range(len(on_off))):
                 if on_off[i] == False:
                     del self.use_storage_list[i]
-        self.appending_videolist(self.list, self.use_storage_list)
-
         # print(len(self.storage_list), len(self.use_storage_list), deletion, current_row, on_off)
 
 if __name__ == "__main__":
