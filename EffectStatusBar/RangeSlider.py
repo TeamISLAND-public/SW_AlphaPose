@@ -1,6 +1,8 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QGridLayout, QSplitter, QGroupBox, QApplication, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import QGridLayout, QSplitter, QGroupBox, QHBoxLayout, QWidget
 from PyQt5.QtGui import QPainter, QColor, QFont
+
+from Memory.Action import stack, TrackActionCommand
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -39,12 +41,14 @@ QRangeSlider > QSplitter::handle:pressed {
 }
 """
 
+
 def scale(val, src, dst):
     """
     Scale the given value from the scale of src to the scale of dst.
     """
     # print(val,src,dst)
     return int(((val - src[0]) / float(src[1]-src[0])) * (dst[1]-dst[0]) + dst[0])
+
 
 class Ui_Form(object):
     """default range slider form"""
@@ -169,6 +173,7 @@ class Handle(Element):
 
     def mousePressEvent(self, event):
         setattr(self, '__mx', event.globalX())
+
 
 class QRangeSlider(QWidget, Ui_Form):
     """
@@ -400,7 +405,9 @@ class QRangeSlider(QWidget, Ui_Form):
 
             offset = -20
             w = xpos + offset
+            last = self.start()
             self._setStart(v)
+            stack.push(TrackActionCommand(last, self.end(), self.start()))
 
         elif index == self._SPLIT_END:
             _lockWidth(self._head)
@@ -409,7 +416,9 @@ class QRangeSlider(QWidget, Ui_Form):
 
             offset = -40
             w = self.width() - xpos + offset
+            last = self.end()
             self._setEnd(v)
+            stack.push(TrackActionCommand(last, self.end(), self.start()))
 
         _unlockWidth(self._tail)
         _unlockWidth(self._head)

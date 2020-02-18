@@ -1,14 +1,15 @@
 from PyQt5.QtWidgets import QUndoStack, QUndoCommand
 
 from EffectBar.EffectBar import EffectBar
-from EffectStatusBar.EffectstatusBar import EffectStatusBar
-from EffectStatusBar.RangeSlider import QRangeSlider
+import EffectStatusBar.EffectstatusBar
+import EffectStatusBar.RangeSlider
 
 stack = QUndoStack()
 
 
 # maybe be called in EffectBar
-class EffectAction(QUndoCommand):
+# I have to solve how to remember generated effect
+class EffectActionCommand(QUndoCommand):
 
     def __init__(self, name, deletion, type):
         super().__init__()
@@ -30,15 +31,15 @@ class EffectAction(QUndoCommand):
             if self.type == 4:
                 EffectBar.effect4_clicked()
         else:
-            for i in EffectStatusBar.items():
+            for i in EffectStatusBar.EffectstatusBar.EffectStatusBar.items():
                 if i.text() == self.name:
-                    EffectStatusBar.removeRow(i.row())
+                    EffectStatusBar.EffectstatusBar.EffectStatusBar.removeRow(i.row())
 
     def redo(self):
         if self.deletion:
-            for i in EffectStatusBar.items():
+            for i in EffectStatusBar.EffectstatusBar.EffectStatusBar.items():
                 if i.text() == self.name:
-                    EffectStatusBar.removeRow(i.row())
+                    EffectStatusBar.EffectstatusBar.EffectStatusBar.removeRow(i.row())
         else:
             if self.type == 0:
                 EffectBar.effect0_clicked()
@@ -53,7 +54,7 @@ class EffectAction(QUndoCommand):
 
 
 # maybe be called in QRangeSlider
-class TrackAction(QUndoCommand):
+class TrackActionCommand(QUndoCommand):
 
     def __init__(self, start, finish, change):
         super().__init__()
@@ -63,12 +64,12 @@ class TrackAction(QUndoCommand):
 
     def undo(self):
         if self.change > self.old_finish:
-            QRangeSlider._setEnd(self.old_finish)
+            EffectStatusBar.RangeSlider.QRangeSlider._setEnd(self.old_finish)
         else:
-            QRangeSlider._setStart(self.old_start)
+            EffectStatusBar.RangeSlider.QRangeSlider._setStart(self.old_start)
 
     def redo(self):
         if self.change > self.old_finish:
-            QRangeSlider._setEnd(self.change)
+            EffectStatusBar.RangeSlider.QRangeSlider._setEnd(self.change)
         else:
-            QRangeSlider._setStart(self.change)
+            EffectStatusBar.RangeSlider.QRangeSlider._setStart(self.change)
