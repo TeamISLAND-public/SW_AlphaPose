@@ -10,24 +10,24 @@ stack = QUndoStack()
 # maybe be called in EffectBar
 class EffectAction(QUndoCommand):
 
-    def __init__(self, name, deletion):
+    def __init__(self, name, deletion, type):
         super().__init__()
         self.name = name
         # type of deletion is bool
         self.deletion = deletion
+        self.type = type
 
     def undo(self):
         if self.deletion:
-            type = EffectBar.type
-            if type == 0:
+            if self.type == 0:
                 EffectBar.effect0_clicked()
-            if type == 1:
+            if self.type == 1:
                 EffectBar.effect1_clicked()
-            if type == 2:
+            if self.type == 2:
                 EffectBar.effect2_clicked()
-            if type == 3:
+            if self.type == 3:
                 EffectBar.effect3_clicked()
-            if type == 4:
+            if self.type == 4:
                 EffectBar.effect4_clicked()
         else:
             for i in EffectStatusBar.items():
@@ -40,16 +40,15 @@ class EffectAction(QUndoCommand):
                 if i.text() == self.name:
                     EffectStatusBar.removeRow(i.row())
         else:
-            type = EffectBar.type
-            if type == 0:
+            if self.type == 0:
                 EffectBar.effect0_clicked()
-            if type == 1:
+            if self.type == 1:
                 EffectBar.effect1_clicked()
-            if type == 2:
+            if self.type == 2:
                 EffectBar.effect2_clicked()
-            if type == 3:
+            if self.type == 3:
                 EffectBar.effect3_clicked()
-            if type == 4:
+            if self.type == 4:
                 EffectBar.effect4_clicked()
 
 
