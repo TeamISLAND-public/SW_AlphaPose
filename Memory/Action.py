@@ -55,40 +55,54 @@ class EffectActionCommand(QUndoCommand):
 # maybe be called in QRangeSlider
 class TrackActionCommand(QUndoCommand):
 
-    def __init__(self, start, finish, change, slider):
+    def __init__(self, start, end, change, slider):
         super().__init__()
         self.old_start = start
-        self.old_finish = finish
+        self.old_end = end
         self.change = change
         self.slider = slider
 
-        self.setText("Change the range")
+        if self.change > self.old_end:
+            self.setText("Change the end of range")
+        else:
+            self.setText("Change the start of range")
 
     def undo(self):
-        if self.change > self.old_finish:
-            self.slider._setEnd(self.old_finish)
+        if self.change > self.old_end:
+            self.slider._setEnd(self.old_end)
         else:
             self.slider._setStart(self.old_start)
 
     def redo(self):
-        if self.change > self.old_finish:
+        if self.change > self.old_end:
             self.slider._setEnd(self.change)
         else:
             self.slider._setStart(self.change)
 
 
 class UndoList(QDialog):
+    __instance = None
+
+    @classmethod
+    def __getInstance(cls):
+        return cls.__instance
+
+    @classmethod
+    def getInstance(cls):
+        cls.__instance = cls()
+        cls.getInstance = cls.__getInstance
+        return cls.__instance
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Command List")
         self.stack = QUndoStack()
 
-        view = QUndoView()
-        view.setStack(self.stack)
+        self.view = QUndoView()
+        self.view.setStack(self.stack)
 
         layout = QGridLayout()
-        layout.addWidget(view)
+        layout.addWidget(self.view)
 
         self.setLayout(layout)
         # self.show()

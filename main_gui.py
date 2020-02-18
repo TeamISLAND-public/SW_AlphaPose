@@ -18,7 +18,7 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.commandList = UndoList()
+        self.commandList = UndoList.getInstance()
         self.videoPlayer = VideoStreamer()
         self.videoTable = VideoList(self.videoPlayer)
         self.effectBar = EffectBar()
@@ -132,11 +132,11 @@ class MyApp(QMainWindow):
         undo = QAction("&Undo", self)
         undo.setShortcut("Ctrl+Z")
         undo.setStatusTip("Undo last action")
-        undo.triggered.connect(UndoList().stack.undo)
+        undo.triggered.connect(self.commandList.stack.undo)
 
         redo = QAction("&Redo", self)
         redo.setStatusTip("Cancel undo action")
-        redo.triggered.connect(UndoList().stack.redo)
+        redo.triggered.connect(self.commandList.stack.redo)
 
         menu_edit.addAction(undoList)
         menu_edit.addAction(undo)

@@ -282,6 +282,9 @@ class QRangeSlider(QWidget, Ui_Form):
         # Enabling the text of current frame in _splitters
         self.setDrawValues(True)
 
+        # undo list
+        self.commandList = UndoList.getInstance()
+
     def min(self):
         """:return: minimum value"""
         return getattr(self, '__min', None)
@@ -386,6 +389,7 @@ class QRangeSlider(QWidget, Ui_Form):
         """private method for handling moving splitter handles"""
         hw = self._splitter.handleWidth()
         # print(hw)
+
         def _lockWidth(widget):
             width = widget.size().width()
             widget.setMinimumWidth(width)
@@ -407,7 +411,7 @@ class QRangeSlider(QWidget, Ui_Form):
             w = xpos + offset
             last = self.start()
             self._setStart(v)
-            UndoList().stack.push(TrackActionCommand(last, self.end(), self.start(), self))
+            self.commandList.stack.push(TrackActionCommand(last, self.end(), self.start(), self))
 
         elif index == self._SPLIT_END:
             _lockWidth(self._head)
@@ -418,7 +422,7 @@ class QRangeSlider(QWidget, Ui_Form):
             w = self.width() - xpos + offset
             last = self.end()
             self._setEnd(v)
-            UndoList().stack.push(TrackActionCommand(last, self.end(), self.start(), self))
+            self.commandList.stack.push(TrackActionCommand(last, self.end(), self.start(), self))
 
         _unlockWidth(self._tail)
         _unlockWidth(self._head)
