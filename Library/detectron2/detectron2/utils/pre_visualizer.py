@@ -43,17 +43,17 @@ class VisualizationDemo(object):
 
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-            if "panoptic_seg" in predictions:
-                # vis_frame = video_visualizer.draw_panoptic_seg_predictions(
-                #     frame, panoptic_seg.to(self.cpu_device), segments_info
-                # )
-                vis_frame = 0
-            elif "instances" in predictions:
-                print("video instances")
-                vis_frame = video_visualizer.draw_instance_predictions(cnt, frame, predictions)
-            elif "sem_seg" in predictions:
-                print("sem_seg")
-                vis_frame = None
+            # if "panoptic_seg" in predictions:
+            #     # vis_frame = video_visualizer.draw_panoptic_seg_predictions(
+            #     #     frame, panoptic_seg.to(self.cpu_device), segments_info
+            #     # )
+            #     vis_frame = 0
+            # elif "instances" in predictions:
+            #     print("video instances")
+            #     vis_frame = video_visualizer.draw_instance_predictions(cnt, frame, predictions)
+            # elif "sem_seg" in predictions:
+            #     print("sem_seg")
+            #     vis_frame = None
 
             vis_frame = video_visualizer.draw_instance_predictions(frame, predictions, effect_type)
             # Converts Matplotlib RGB format to OpenCV BGR format
