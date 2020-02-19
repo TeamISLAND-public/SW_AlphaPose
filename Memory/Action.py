@@ -63,9 +63,9 @@ class TrackActionCommand(QUndoCommand):
         self.slider = slider
 
         if self.change > self.old_end:
-            self.setText("Change the end of range")
+            self.setText("Change the end {} to {}".format(self.old_end, self.change))
         else:
-            self.setText("Change the start of range")
+            self.setText("Change the start {} to {}".format(self.old_start, self.change))
 
     def undo(self):
         if self.change > self.old_end:
@@ -78,6 +78,32 @@ class TrackActionCommand(QUndoCommand):
             self.slider._setEnd(self.change)
         else:
             self.slider._setStart(self.change)
+
+    def set_change(self, new):
+        self.change = new
+
+
+class UndoAction(QUndoStack):
+
+    def __init__(self):
+        super().__init__()
+
+    # def push(self, QUndoCommand):
+        # if type(self.command(self.index())) == type(QUndoCommand):
+        #     if type(QUndoCommand) == type(TrackActionCommand):
+        #         lastCommand = self.command(self.index())
+        #         if (lastCommand.change > lastCommand.old_end and QUndoCommand.change > QUndoCommand.old_end) or (lastCommand.change < lastCommand.old_end and QUndoCommand.change < QUndoCommand.old_end):
+        #             lastCommand.set_change(QUndoCommand.change)
+        # else:
+        #     self.push(QUndoCommand)
+
+        # if type(QUndoCommand) == TrackActionCommand:
+        #     if QUndoCommand.old_end == QUndoCommand.change or QUndoCommand.old_start == QUndoCommand.change:
+        #         print(QUndoCommand.old_end, QUndoCommand.old_start, QUndoCommand.change)
+        #         self.command(self.index()).set_change(QUndoCommand.change)
+        #         return
+        # else:
+        #     self.push(QUndoCommand)
 
 
 class UndoList(QDialog):
@@ -96,7 +122,7 @@ class UndoList(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Command List")
-        self.stack = QUndoStack()
+        self.stack = UndoAction()
 
         self.view = QUndoView()
         self.view.setStack(self.stack)
@@ -105,7 +131,6 @@ class UndoList(QDialog):
         layout.addWidget(self.view)
 
         self.setLayout(layout)
-        # self.show()
 
 
 if __name__ == "__main__":
