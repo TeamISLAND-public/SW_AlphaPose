@@ -1,8 +1,9 @@
 import sys
 import cv2
-from moviepy.editor import AudioFileClip, VideoFileClip
+# from moviepy.editor import AudioFileClip, VideoFileClip
+from moviepy.audio.io.AudioFileClip import AudioFileClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
 from PyQt5.QtWidgets import QProgressBar, QMainWindow, QApplication, QVBoxLayout, QWidget, QFileDialog
-
 
 class VideoSave(QMainWindow):
 

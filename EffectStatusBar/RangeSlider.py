@@ -8,6 +8,7 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 __all__ = ['QRangeSlider']
+currentRowCount = None
 total_frame = None
 current_frame = None
 
@@ -233,7 +234,7 @@ class QRangeSlider(QWidget, Ui_Form):
     _SPLIT_START = 1
     _SPLIT_END = 2
 
-    def __init__(self, parent=None, current_frame=current_frame, total_frame=total_frame):
+    def __init__(self, parent=None, currentRowCount=currentRowCount, current_frame=current_frame, total_frame=total_frame):
         """Create a new QRangeSlider instance.
             :param parent: QWidget parent
             :return: New QRangeSlider instance.
@@ -320,8 +321,8 @@ class QRangeSlider(QWidget, Ui_Form):
         self._splitter.moveSplitter(v, self._SPLIT_START)
         self._splitter.splitterMoved.connect(self._handleMoveSplitter)
         self._setStart(value)
-        print("setStart")
-        print(v,value,self.max(),self.min())
+        # print("setStart")
+        # print(v,value,self.max(),self.min())
 
     def _setEnd(self, value):
         """stores the end value only"""
@@ -337,8 +338,8 @@ class QRangeSlider(QWidget, Ui_Form):
         self._splitter.moveSplitter(v, self._SPLIT_END)
         self._splitter.splitterMoved.connect(self._handleMoveSplitter)
         self._setEnd(value)
-        print("setEnd")
-        print(v,value,self.max(),self.min())
+        # print("setEnd")
+        # print(v,value,self.max(),self.min())
 
     def drawValues(self):
         """:return: True if slider values will be drawn"""
