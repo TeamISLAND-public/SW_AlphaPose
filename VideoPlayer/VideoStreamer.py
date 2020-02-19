@@ -181,7 +181,7 @@ class VideoStreamer(QWidget):
             self.timer.stop()
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
-        videoSave = VideoSave(self.name, self.list, self.fps, self.cap.get(4), self.cap.get(3))
+        videoSave = VideoSave(self.name, self.duplicating_list, self.fps, self.cap.get(4), self.cap.get(3))
         videoSave.show()
         videoSave.saveVideo()
 

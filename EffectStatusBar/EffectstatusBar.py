@@ -3,7 +3,6 @@ from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal
 from PyQt5.QtGui import QColor
 from EffectStatusBar.RangeSlider import QRangeSlider
 
-
 class EffectStatusBar(QTableWidget):
     sent_fix = pyqtSignal(bool, int, list)
     def __init__(self):
@@ -24,7 +23,7 @@ class EffectStatusBar(QTableWidget):
         self.cell_right_clicked()
 
         self.stateList = []
-        self.cellClicked.connect(self.test)
+        self.cellClicked.connect(self.on_off)
 
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
@@ -64,7 +63,7 @@ class EffectStatusBar(QTableWidget):
         self.horizontalHeader().setStretchLastSection(True)
 
     @pyqtSlot(int, int)
-    def test(self, row, col):
+    def on_off(self, row, col):
         if col == 1:
             if self.stateList[row] == True:
                 self.stateList[row] = False
