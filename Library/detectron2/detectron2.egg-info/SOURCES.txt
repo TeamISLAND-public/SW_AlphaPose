@@ -1,12 +1,11 @@
 setup.py
-D:/Desktop/github/Team_Island/Library/detectron2/detectron2/layers/csrc/vision.cpp
-D:/Desktop/github/Team_Island/Library/detectron2/detectron2/layers/csrc/ROIAlign/ROIAlign_cpu.cpp
-D:/Desktop/github/Team_Island/Library/detectron2/detectron2/layers/csrc/ROIAlignRotated/ROIAlignRotated_cpu.cpp
-D:/Desktop/github/Team_Island/Library/detectron2/detectron2/layers/csrc/box_iou_rotated/box_iou_rotated_cpu.cpp
-D:/Desktop/github/Team_Island/Library/detectron2/detectron2/layers/csrc/nms_rotated/nms_rotated_cpu.cpp
+C:/Users/daniel/PycharmProjects/Project1/Library/detectron2/detectron2/layers/csrc/vision.cpp
+C:/Users/daniel/PycharmProjects/Project1/Library/detectron2/detectron2/layers/csrc/ROIAlign/ROIAlign_cpu.cpp
+C:/Users/daniel/PycharmProjects/Project1/Library/detectron2/detectron2/layers/csrc/ROIAlignRotated/ROIAlignRotated_cpu.cpp
+C:/Users/daniel/PycharmProjects/Project1/Library/detectron2/detectron2/layers/csrc/box_iou_rotated/box_iou_rotated_cpu.cpp
+C:/Users/daniel/PycharmProjects/Project1/Library/detectron2/detectron2/layers/csrc/nms_rotated/nms_rotated_cpu.cpp
 demo/__init__.py
 demo/open_demo.py
-demo/predictor_original.py
 demo/run_demo.py
 detectron2/__init__.py
 detectron2.egg-info/PKG-INFO
